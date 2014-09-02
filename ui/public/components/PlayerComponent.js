@@ -115,13 +115,15 @@ var PlayerComponent = module.exports = React.createClass({
                 gamePoint: true
             });
             
-            this.pulse = setInterval(function() {
-                if(_this.props.server == _this.props.positionId) {
-                    _this.setState({
-                        gamePointVisible: !_this.state.gamePointVisible
-                    });
-                }
-            }, 900);
+            if(typeof _this.pulse === 'undefined') {
+                this.pulse = setInterval(function() {
+                    if(_this.props.server == _this.props.positionId) {
+                        _this.setState({
+                            gamePointVisible: !_this.state.gamePointVisible
+                        });
+                    }
+                }, 900);
+            }
             
         } else {
             
@@ -131,6 +133,7 @@ var PlayerComponent = module.exports = React.createClass({
             });
             
             clearTimeout(_this.pulse);
+            _this.pulse = undefined;
             
         }
         
