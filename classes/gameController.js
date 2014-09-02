@@ -381,8 +381,6 @@ gameController.prototype.start = function(startingServe) {
 /**
  * Register a new point scored
  */
- var nextPointWins;
- var leadingPlayer;
 gameController.prototype.scored = function(event) {
 
     var player = event.data;
@@ -410,15 +408,10 @@ gameController.prototype.scored = function(event) {
         gameScore: game.score
     });
     
-    if(game.nextPointWins()) {
-        if(game.nextPointWins() !== nextPointWins || game.leadingPlayer() !== leadingPlayer) {
-            console.log(chalk.green('NEXT POINT WINS'));
-            io.sockets.emit('game.gamePoint', {
-                player: game.leadingPlayer() - 1,
-            });
-            nextPointWins = game.nextPointWins();
-            leadingPlayer = game.leadingPlayer();
-        }
+    if(game.nextPointWins() && game.leadingPlayer() - 1 == playerID) {
+        io.sockets.emit('game.gamePoint', {
+            player: playerID
+        });
     } else {
         io.sockets.emit('game.notGamePoint', {
             player: game.leadingPlayer() - 1,
@@ -459,8 +452,6 @@ gameController.prototype.pointRemoved = function(event) {
             player: playerID,
             score: this.score.slice()
         });
-        
-        //players[playerID].set('score', game.score[playerID]);
         
         io.sockets.emit('game.cancelPoint', {
             player: playerID,
