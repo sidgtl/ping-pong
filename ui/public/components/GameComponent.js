@@ -67,8 +67,8 @@ var GameComponent = module.exports = React.createClass({
             _this.switchServer(data.player);
         });
         
-        node.socket.on('game.score', _this.score);
         node.socket.on('game.end', _this.end);
+        node.socket.on('game.score', _this.score);
         node.socket.on('game.reset', _this.reset);
         node.socket.on('game.gamePoint', _this.gamePoint);
         
@@ -143,12 +143,16 @@ var GameComponent = module.exports = React.createClass({
     
         var announcement = this.state.score;
         
-        if(this.state.server == 1) {
-            announcement.reverse();
-        }
+        if(typeof this.state.winner === 'undefined') {
         
-        this.queueSound('' + announcement[0], -300);
-        this.queueSound('' + announcement[1]);
+            if(this.state.server == 1) {
+                announcement.reverse();
+            }
+            
+            this.queueSound('' + announcement[0], -300);
+            this.queueSound('' + announcement[1]);
+            
+        }
     
     },
     
@@ -156,7 +160,9 @@ var GameComponent = module.exports = React.createClass({
     
     end: function(data) {
         
-        var playerSound = '';
+        var
+            _this = this,
+            playerSound = '';
         
         this.setState({ winner: data.winner });
         
@@ -168,9 +174,13 @@ var GameComponent = module.exports = React.createClass({
             playerSound = player1.name;
         }
         
+        this.clearAudioQueue();
         sounds.play('game_end');
-        this.queueSound(playerSound.toLowerCase(), -600);
-        this.queueSound('won_the_game');
+        
+        setTimeout(function() {
+            _this.queueSound(playerSound.toLowerCase(), -600);
+            _this.queueSound('won_the_game');
+        }, 900);
         
     },
     
@@ -259,6 +269,12 @@ var GameComponent = module.exports = React.createClass({
 
         play();
 
+    },
+    
+    
+    
+    clearAudioQueue: function() {
+        soundQueue = [];
     },
 
 
