@@ -458,7 +458,13 @@ gameController.prototype.pointRemoved = function(event) {
             score: game.score[playerID]
         });
         
-        if(game.checkWon()) return;
+        io.sockets.emit('game.notGamePoint', {
+            player: playerID
+        });
+        
+        if(game.checkWon()) {
+            return;
+        }
         
         game.checkServerSwitch();
         game.checkGamePoint();
