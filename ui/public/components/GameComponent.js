@@ -116,13 +116,13 @@ var GameComponent = module.exports = React.createClass({
     
     
     score: function(data) {
-        
+
         var _this = this;
-        
+
         this.setState({
             score: data.gameScore
         });
-        
+
         // This is really counterintuitive, and far from a permanent
         // solution. This small delay allows us to cancel the score
         // announcement. For example, when a service change occurs,
@@ -131,11 +131,11 @@ var GameComponent = module.exports = React.createClass({
         setTimeout(function() {
             _this.announceScore();
         }, 0);
-        
+
     },
-    
-    
-    
+
+
+
     gamePoint: function(data) {
         
         var
