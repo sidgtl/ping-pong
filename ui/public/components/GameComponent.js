@@ -62,15 +62,15 @@ var GameComponent = module.exports = React.createClass({
         var _this = this;
         
         sounds = new Howl(soundSprite);
-
-        node.socket.on('game.switchServer', function(data) {
-            _this.switchServer(data.player);
-        });
         
         node.socket.on('game.end', _this.end);
         node.socket.on('game.score', _this.score);
         node.socket.on('game.reset', _this.reset);
         node.socket.on('game.gamePoint', _this.gamePoint);
+        
+        node.socket.on('game.switchServer', function(data) {
+            _this.switchServer(data.player);
+        });
         
         node.socket.on('feelers.disconnect', _this.tableDisconnected);
         node.socket.on('feelers.connect', _this.tableConnected);
@@ -93,8 +93,13 @@ var GameComponent = module.exports = React.createClass({
 
     switchServer: function(player) {
         
-        var playerSound = '';
-        this.setState({ server: player });
+        var
+            _this = this,
+            playerSound = '';
+        
+        this.setState({
+            server: player
+        });
 
         if(player == 0) {
             playerSound = player0.name;
@@ -103,7 +108,7 @@ var GameComponent = module.exports = React.createClass({
         if(player == 1) {
             playerSound = player1.name;
         }
-
+        
         this.queueSound(playerSound.toLowerCase() + '-to-serve');
 
     },
@@ -111,8 +116,22 @@ var GameComponent = module.exports = React.createClass({
     
     
     score: function(data) {
-        this.setState({ score: data.gameScore });
-        this.announceScore();
+        
+        var _this = this;
+        
+        this.setState({
+            score: data.gameScore
+        });
+        
+        // This is really counterintuitive, and far from a permanent
+        // solution. This small delay allows us to cancel the score
+        // announcement. For example, when a service change occurs,
+        // we want to defer the score announcement to after the
+        // service change announcement.
+        setTimeout(function() {
+            _this.announceScore();
+        }, 0);
+        
     },
     
     
@@ -141,7 +160,7 @@ var GameComponent = module.exports = React.createClass({
     
         var announcement = this.state.score;
         
-        if(typeof this.state.winner === 'undefined') {
+        if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
         
             // Announce the server's score first
             if(this.state.server == 1) {
@@ -224,10 +243,11 @@ var GameComponent = module.exports = React.createClass({
     
     
     
-    queueSound: function(sound, offset) {
+    queueSound: function(sound, offset, cb) {
         soundQueue.push({
             name: sound,
-            offsetNext: typeof offset === 'undefined' ? 0 : offset
+            offsetNext: typeof offset === 'undefined' ? 0 : offset,
+            cb: cb
         });
         this.playQueue();
     },
@@ -258,7 +278,12 @@ var GameComponent = module.exports = React.createClass({
                 duration = soundSprite.sprite[sound.name][1];
                 offset = sound.offsetNext ? duration + sound.offsetNext : duration;
                 sounds.play(sound.name);
-                setTimeout(play, offset);
+                setTimeout(function() {
+                    play();
+                    if(sound.cb) {
+                        sound.cb();
+                    }
+                }, offset);
             } else {
                 soundsPlaying = false;
             }
