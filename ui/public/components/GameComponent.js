@@ -104,9 +104,8 @@ var GameComponent = module.exports = React.createClass({
             playerSound = player1.name;
         }
 
-        this.queueSound(playerSound.toLowerCase(), -600);
-        this.queueSound('to_serve');
-        
+        this.queueSound(playerSound.toLowerCase() + '-to-serve');
+
     },
     
     
@@ -131,9 +130,8 @@ var GameComponent = module.exports = React.createClass({
         if(player == 1) {
             playerSound = player1.name;
         }
-        
-        this.queueSound('game_point', -500);
-        this.queueSound(playerSound.toLowerCase());
+
+        this.queueSound('game-point-' + playerSound.toLowerCase());
         
     },
     
@@ -179,8 +177,7 @@ var GameComponent = module.exports = React.createClass({
         sounds.play('game_end');
         
         setTimeout(function() {
-            _this.queueSound(playerSound.toLowerCase(), -600);
-            _this.queueSound('won_the_game');
+            this.queueSound(playerSound.toLowerCase + '-won-the-game');
         }, 900);
         
     },
