@@ -31,13 +31,6 @@ Then run `gulp sounds` from the project root to rebuild the sprite. This will:
 
 Remember to rebuild the frontend after regenerating the sounds in order to include the updated sprite JSON in the Browserify build.
 
-#### Voice Announcements
-Voice announcements can be obtained from Google's unofficial TTS API. Audio can be downloaded from `http://translate.google.com/translate_tts?tl=en-gb&q={STRING}` – just replace `{STRING}` with the text to be spoken.
-
-Point announcements have been downloaded for 0–40 (just in case a game lasts that long!). Here's a script you can run in the terminal to download a bunch of point announcements at once:
-
-    for i in {0..40} ; do curl -q -A Mozilla -o ${i}.mp3 "http://translate.google.com/translate_tts?q=${i}&tl=en-gb" ; done
-
 ## Todo
 - General restructuring and refactoring (v1 – new architecture, tidy events, move game logic client-side)
 - Rather than mashing up audio, use full clips for each phrase for each player for more natural sounds (this should be automated)
