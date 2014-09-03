@@ -6,6 +6,7 @@ We hacked our Ping Pong table! [Read the blog post.](http://sidigital.co/blog/la
 - [socket.io](http://socket.io/)
 - [React](http://facebook.github.io/react/)
 - [gulp.js](http://gulpjs.com/)
+- [Browserify](http://browserify.org/)
 
 ## Building
 Gulp is used to build the client. From the project root, run `npm install` and `gulp` to build.
@@ -18,9 +19,17 @@ You'll first need to install Audiosprite:
     npm install -g audiosprite
     brew install ffmpeg --with-theora --with-libogg --with-libvorbis
 
-Then run `npm run-script sounds` from the project root to rebuild the sprite.
-It'll automatically include any .mp3 or .wav files included in the `ui/public/sounds` directory.
-This will also rebuild the json file that contains the audio data required to play the individual sounds.
+Then run `gulp sounds` from the project root to rebuild the sprite. This will:
+
+- Fetch audio announcements for all players from Google's unofficial TTS API
+- Fetch point announcements for scores 0–40 from Google's unofficial TTS API
+- Include any .mp3 or .wav files in the `ui/public/sounds` directory
+- Rebuild the JSON file that contains the audio data required to play the individual sounds
+
+`gulp sounds` depends on a DB connection in order to get the player list. You may need to specify the environment to use, for example:
+    NODE_ENV=development gulp sounds
+
+Remember to rebuild the frontend after regenerating the sounds in order to include the updated sprite JSON in the Browserify build.
 
 #### Voice Announcements
 Voice announcements can be obtained from Google's unofficial TTS API. Audio can be downloaded from `http://translate.google.com/translate_tts?tl=en-gb&q={STRING}` – just replace `{STRING}` with the text to be spoken.

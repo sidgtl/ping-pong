@@ -1,5 +1,11 @@
 var
     path = require('path'),
+    fs = require('fs'),
+    exec = require('child_process').exec,
+    request = require('request'),
+    es = require('event-stream'),
+    async = require('async'),
+    slug = require('slug'),
     gulp = require('gulp'),
     gutil = require('gulp-util'),
     source = require('vinyl-source-stream'),
@@ -107,6 +113,110 @@ gulp.task('css', ['css:clean'], function() {
 gulp.task('css:clean', function(cb) {
     return del([path.join(paths.build, '*.css')], cb);
 });
+
+
+
+gulp.task('sounds', function(cb) {
+
+    var
+        Player = require('./models/Player'),
+        scoreRange = [0, 40],
+        announcements = [],
+        downloads = [];
+    
+    announcements = [
+        function(player) {
+            return player + ' to serve';
+        },
+        function(player) {
+            return 'Game point, ' + player;
+        },
+        function(player) {
+            return player + ' won the game!';
+        }
+    ];
+    
+    async.parallel([
+    
+        function(cb) {
+            Player.fetchAll().then(function(players) {
+                async.each(players, function(player, cb) {
+                    fetchAnnouncements(player.get('name'), function(res) {
+                        if(res.writable) {
+                            downloads.push(res);
+                        }
+                        cb();
+                    });
+                }, cb);
+            });
+        },
+        
+        function(cb) {
+            
+            var
+                i = 0,
+                incomplete = function() {
+                    return i < scoreRange[1];
+                };
+
+            async.whilst(incomplete, function(cb) {
+                i ++;
+                getTTS(i, 'en-gb', function(res) {
+                    if(res.writable) {
+                        downloads.push(res);
+                    }
+                    cb();
+                });
+            }, cb);
+            
+        }
+    
+    ], function() {
+        
+        var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', cb);
+        
+        if(downloads.length > 0) {
+            return es.merge.apply(undefined, downloads).on('end', function() {
+                updateSprite();
+            });
+        }
+        
+        updateSprite();
+        
+    });
+        
+    function fetchAnnouncements(player, cb) {
+        async.each(announcements, function(announcement, cb) {
+            announcement = announcement(player);
+            getTTS(announcement, 'en-gb', cb);
+        }, cb);
+    }
+    
+});
+
+
+
+function getTTS(phrase, language, cb) {
+
+    language = language || 'en-gb';
+
+    var
+        requestURL = 'http://translate.google.com/translate_tts?q=' + phrase + '&tl=' + language,
+        fileName = slug(phrase).toLowerCase() + '.mp3',
+        filePath = path.join('./ui/public/sounds/', fileName),
+        res = true;
+
+    fs.exists(filePath, function(exists) {
+        if(!exists) {
+            res = request(requestURL);
+            res.on('response', function() {
+                res.pipe(fs.createWriteStream(filePath));
+            });
+        }
+        cb(res);
+    });
+
+}
 
 
 
