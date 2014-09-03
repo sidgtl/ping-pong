@@ -30,11 +30,12 @@ Point announcements have been downloaded for 0–40 (just in case a game lasts t
     for i in {0..40} ; do curl -q -A Mozilla -o ${i}.mp3 "http://translate.google.com/translate_tts?q=${i}&tl=en-gb" ; done
 
 ## Todo
-- General restructuring and refactoring
+- General restructuring and refactoring (v1 – new architecture, tidy events, move game logic client-side)
+- Rather than mashing up audio, use full clips for each phrase for each player for more natural sounds (this should be automated)
 - Add an easy method for plugging in events from custom hardware (adding players, recording points)
 - Remove dependency on global vars (`game`, for example)
 - Aim for strict mode compliance
-- When an RFID tag that does not have an associated player is scanned, the ID should be emailed, posted to HipChat, etc. so that it can be easily added
+- When an RFID tag that does not have an associated player is scanned, the ID should be emailed, posted to HipChat, etc. so that it can be easily added ... or just add an inactive player to the database?
 
 ### UI
 - On first load, the leaderboard does not fade in like the other stats
