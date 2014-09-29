@@ -408,9 +408,19 @@ gameController.prototype.scored = function(event) {
         gameScore: game.score
     });
     
-    if(game.nextPointWins() && game.leadingPlayer() - 1 == playerID) {
+    /*if(game.nextPointWins() && game.leadingPlayer() - 1 == playerID) {
         io.sockets.emit('game.gamePoint', {
             player: playerID
+        });
+    } else {
+        io.sockets.emit('game.notGamePoint', {
+            player: game.leadingPlayer() - 1,
+        });
+    }*/
+    
+    if(game.nextPointWins()) {
+        io.sockets.emit('game.gamePoint', {
+            player: game.leadingPlayer() - 1
         });
     } else {
         io.sockets.emit('game.notGamePoint', {
