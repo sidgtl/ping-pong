@@ -54,9 +54,13 @@ app.get('/', function(req, res) {
 
 app.get('/leaderboard', function(req, res) {
     // This could use a streaming response instead
-    leaderboard.get(10)
+    /*leaderboard.get(10)
         .then(function(players) {
             res.json(players.toJSON());
+        });*/
+    leaderboard.get(10)
+        .then(function(players) {
+            res.json(players);
         });
 });
 
