@@ -42,23 +42,23 @@ gulp.task('default', ['all'], function() {
 gulp.task('main.js', function() {
 
     var bundle, watch;
-    
+
     bundle = browserify({ cache: {}, packageCache: {}, fullPaths: true, debug: true });
     watch = watchify(bundle);
-    
+
     bundle.transform({ global: true }, 'uglifyify');
-    
+
     // Add  third party libs. We don't want Browserify to parse them because they
     // aren't setup to use Browserify - we'd just be wasting time.
     bundle.add(paths.js + '/third_party/typekit.js', { noparse: true });
-    
+
     // Add the main.js file
     bundle.add(paths.js + '/main.js');
 
     bundle.transform('reactify');
 
     watch.on('update', rebundle);
-        
+
     function rebundle() {
         cleanJS(function() {
             return watch.bundle()
@@ -77,9 +77,9 @@ gulp.task('main.js', function() {
                 .pipe(gulp.dest(paths.versions));
         });
     }
-    
+
     return rebundle();
-    
+
 });
 
 
@@ -91,11 +91,11 @@ function cleanJS(cb) {
 
 
 gulp.task('css', ['css:clean'], function() {
-    
+
     var autoprefixerConfig = {
         cascade: false
     };
-    
+
     return gulp.src(paths.css + '/base.less')
         .pipe(less())
         .pipe(autoprefixer(['last 2 versions', '> 1%'], autoprefixerConfig))
@@ -123,7 +123,7 @@ gulp.task('sounds', function(cb) {
         scoreRange = [0, 40],
         announcements = [],
         downloads = [];
-    
+
     announcements = [
         function(player) {
             return player + ' to serve';
@@ -135,9 +135,9 @@ gulp.task('sounds', function(cb) {
             return player + ' won the game!';
         }
     ];
-    
+
     async.parallel([
-    
+
         function(cb) {
             Player.fetchAll().then(function(players) {
                 async.each(players, function(player, cb) {
@@ -150,9 +150,9 @@ gulp.task('sounds', function(cb) {
                 }, cb);
             });
         },
-        
+
         function(cb) {
-            
+
             var
                 i = 0,
                 incomplete = function() {
@@ -168,30 +168,30 @@ gulp.task('sounds', function(cb) {
                     cb();
                 });
             }, cb);
-            
+
         }
-    
+
     ], function() {
-        
+
         var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', cb);
-        
+
         if(downloads.length > 0) {
             return es.merge.apply(undefined, downloads).on('end', function() {
                 updateSprite();
             });
         }
-        
+
         updateSprite();
-        
+
     });
-        
+
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {
             announcement = announcement(player);
             getTTS(announcement, 'en-gb', cb);
         }, cb);
     }
-    
+
 });
 
 
@@ -208,6 +208,7 @@ function getTTS(phrase, language, cb) {
 
     fs.exists(filePath, function(exists) {
         if(!exists) {
+            console.log('GETTING', phrase);
             res = request(requestURL);
             res.on('response', function() {
                 res.pipe(fs.createWriteStream(filePath));
