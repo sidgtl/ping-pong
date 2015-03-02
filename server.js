@@ -82,10 +82,6 @@ app.get('/api/v1/stats', function(req, res) {
 
             res.json(output);
 
-        })
-        .catch(function(err) {
-            console.log(err);
-            res.end('broke');
         });
 
 });
