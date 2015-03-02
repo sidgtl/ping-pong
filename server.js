@@ -1,4 +1,5 @@
 var
+    BPromise = require('bluebird'),
     path = require('path'),
     net = require('net'),
     chalk = require('chalk'),
@@ -7,7 +8,8 @@ var
     environment = process.env.NODE_ENV = process.env.NODE_ENV || 'production',
     app = require('./app.js'),
     cardReader = require('./lib/cardReader'),
-    leaderboard = require('./lib/leaderboard');
+    leaderboard = require('./lib/leaderboard'),
+    stats = require('./lib/stats').stats;
 
 getConfig = require('./config');
 config = getConfig[environment];
@@ -39,29 +41,53 @@ io.configure(function() {
 });
 
 app.get('/', function(req, res) {
-    
+
     delete require.cache[path.resolve('./versions/js.json')];
     delete require.cache[path.resolve('./versions/css.json')];
-    
+
     res.render('home.jade', {
         title: 'Ping Pong',
         metaDesc: 'Ping Pong',
         JSVersions: require('./versions/js'),
         CSSVersions: require('./versions/css')
     });
-    
+
 });
 
 app.get('/leaderboard', function(req, res) {
     // This could use a streaming response instead
-    /*leaderboard.get(10)
-        .then(function(players) {
-            res.json(players.toJSON());
-        });*/
     leaderboard.get(10)
         .then(function(players) {
             res.json(players);
         });
+});
+
+app.get('/api/v1/stats', function(req, res) {
+
+    var
+        types = Object.keys(stats),
+        output = {},
+        generators;
+
+    generators = types.map(function(type) {
+        return stats[type]();
+    });
+
+    BPromise.all(generators)
+        .then(function(stats) {
+
+            stats.forEach(function(stat) {
+                output[stat.type] = stat.data;
+            });
+
+            res.json(output);
+
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.end('broke');
+        });
+
 });
 
 app.listen(config.clientPort);
@@ -79,7 +105,7 @@ io.sockets.on('connection', function(client) {
 });
 
 core.on('scored', game.feelerPressed);
-core.on('ping', game.feelersPingReceived);    
+core.on('ping', game.feelersPingReceived);
 core.on('batteryLow', game.batteryLow);
 
 core.on('online', function() {

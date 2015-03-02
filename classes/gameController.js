@@ -7,7 +7,7 @@ var
     Feeler = require('./feelerController'),
     Game = require('../models/Game'),
     Player = require('../models/Player'),
-    stats = require('../lib/stats'),
+    stats = require('../lib/stats').events,
     leaderboard = require('../lib/leaderboard'),
     players = [],
     serve,
@@ -38,36 +38,36 @@ function gameController() {
             game.pointRemoved({ data: i + 1 });
         });
     });
-    
+
     stats.on('biggestWinningStreak', function(streak) {
         io.sockets.emit('stats.biggestWinningStreak', streak);
     });
-    
+
     stats.on('mostConsecutiveLosses', function(streak) {
         io.sockets.emit('stats.mostConsecutiveLosses', streak);
     });
-    
+
     stats.on('largestWhooping', function(whooping) {
         io.sockets.emit('stats.largestWhooping', whooping);
     });
-    
+
     stats.on('totalCompanyGames', function(count) {
         io.sockets.emit('stats.totalCompanyGames', count);
     });
-    
+
     stats.on('mostFrequentPlayer', function(player) {
         io.sockets.emit('stats.mostFrequentPlayer', player);
     });
 
     elo.on('tip.playerWin', function(player) {
-        
+
         var
             pronoun = 'them',
             genderPronouns = {
                 male: 'him',
                 female: 'her'
             };
-        
+
         if(player.gender) {
             pronoun = genderPronouns[player.gender];
         }
@@ -75,7 +75,7 @@ function gameController() {
         io.sockets.emit('game.message', {
             message: 'A win for <span class="player-' + player.position + '">' + player.name + '</span> takes ' + pronoun + ' to rank ' + player.winningLeaderboardRank
         });
-        
+
     });
 
 }
@@ -116,15 +116,15 @@ gameController.prototype.addPlayerByRfid = function(rfid) {
  * Add a player to the game
  */
 gameController.prototype.addPlayer = function(playerID, custom) {
-    
+
     var
         attr = playerID !== null ? 'id' : custom.attr,
         value = playerID !== null ? playerID : custom.value,
         position;
-    
+
     // Load the model for the added player
     Player.where(attr, value).fetch().then(function(player) {
-        
+
         if(!player) {
             console.log(chalk.red('Player ' + value + ' not found'));
             io.sockets.emit('game.playerNotFound', {
@@ -139,37 +139,37 @@ gameController.prototype.addPlayer = function(playerID, custom) {
             console.log(chalk.yellow('A third player joined, resetting the game'));
             return game.end(false);
         }
-        
+
         if(game.playerInGame(player.id)) {
             console.log(chalk.red(player.get('name') + ' is already in the game!'));
             return;
-        } 
-        
+        }
+
         console.log(chalk.green('Player added: ' + player.get('name')));
-        
+
         players.push(player);
         position = players.indexOf(player);
         elo.addPlayer(player, position);
-        
+
         if(players.length === settings.minPlayers) {
             game.ready();
         }
-        
+
         // Notify the client a player has joined
         io.sockets.emit('player' + position + '.join', {
             player: player.toJSON(),
             position: players.indexOf(player)
         });
-        
+
         io.sockets.emit('player.join', {
             player: player.toJSON(),
             position: players.indexOf(player)
         });
-        
+
         io.sockets.emit('leaderboard.hide');
-    
+
     });
-    
+
 };
 
 
@@ -205,26 +205,26 @@ gameController.prototype.reset = function() {
  * End game and reset score
  */
 gameController.prototype.end = function(complete) {
-    
+
     complete = typeof complete == 'undefined' ? true : complete;
-    
+
     var
         _this = this,
         winningPlayer = this.leadingPlayer(),
         updatedRanks = [];
-    
+
     if(!complete) {
         io.sockets.emit('game.reset');
         return this.reset();
     }
-    
-    
+
+
     if(winningPlayer - 1 === 0) {
         updatedRanks = [elo.players[0].winningLeaderboardRank, elo.players[1].losingLeaderboardRank];
     } else {
         updatedRanks = [elo.players[0].losingLeaderboardRank, elo.players[1].winningLeaderboardRank];
     }
-    
+
     io.sockets.emit('game.message', {
         message: '<span class="player-0">' + players[0].get('name') + '</span> is now rank ' + updatedRanks[0] + ', <span class="player-1">' + players[1].get('name') + '</span> is rank ' + updatedRanks[1]
     });
@@ -232,7 +232,7 @@ gameController.prototype.end = function(complete) {
     io.sockets.emit('game.end', {
         winner: winningPlayer - 1
     });
-    
+
     setTimeout(function() {
         io.sockets.emit('game.reset');
     }, settings.winningViewDuration + 200);
@@ -243,16 +243,16 @@ gameController.prototype.end = function(complete) {
         player1_score: game.score[1],
         score_delta: Math.abs(game.score[0] - game.score[1])
     });
-    
+
     // Add the game to the DB
     gameModel.save()
         .then(function() {
             stats.emit('game.end');
             _this.reset();
         });
-        
+
     players.forEach(function(player, i) {
-        
+
         if(i === winningPlayer - 1) {
             player.set('elo', elo.players[i].winningRank);
         } else {
@@ -265,9 +265,9 @@ gameController.prototype.end = function(complete) {
         player.save();
 
     });
-    
+
     console.log(chalk.green('Game ending, ' + players[winningPlayer - 1].get('name') + ' won'));
-    
+
 };
 
 
@@ -295,56 +295,56 @@ gameController.prototype.ready = function() {
         player0_id: players[0].get('id'),
         player1_id: players[1].get('id')
     });
-    
+
     leaderboard.get().then(function(leaderboard) {
         elo.setLeaderboard(leaderboard);
     });
-    
+
     // Find the last game between the players
     Game.lastBetweenPlayers([players[0].get('id'), players[1].get('id')])
         .fetch()
         .then(function(game) {
-            
+
             if(game) {
-                
+
                 var lastGame = [];
-                
+
                 lastGame.push({
                     player: players[0].toJSON(),
                     score: undefined
                 });
-                
+
                 lastGame.push({
                     player: players[1].toJSON(),
                     score: undefined
                 });
-                
+
                 if(game.get('player0_id') === players[0].get('id')) {
                     lastGame[0].score = game.get('player0_score');
                     lastGame[1].score = game.get('player1_score');
                 }
-                
+
                 if(game.get('player0_id') === players[1].get('id')) {
                     lastGame[0].score = game.get('player1_score');
                     lastGame[1].score = game.get('player0_score');
                 }
-                
+
                 io.sockets.emit('stats.lastGameBetweenPlayers', {
                     lastGame: lastGame
                 });
-                
+
             } else {
-            
+
                 io.sockets.emit('stats.firstGameBetweenPlayers', {
                     lastGame: undefined
                 });
-            
+
                 io.sockets.emit('game.message', {
                     message: 'Players first match'
                 });
-            
+
             }
-            
+
         });
 
     // Find the players head to head score
@@ -363,12 +363,12 @@ gameController.prototype.ready = function() {
  * Start the game
  */
 gameController.prototype.start = function(startingServe) {
-    
+
     if(!game.minPlayersAdded()) {
         console.log(chalk.red('Can\'t start the game until ' + settings.minPlayers + ' players have joined'));
         return false;
     }
-    
+
     gameModel.start();
     game.checkServerSwitch(startingServe);
     game.inProgress = true;
@@ -407,7 +407,7 @@ gameController.prototype.scored = function(event) {
         score: game.score[playerID],
         gameScore: game.score
     });
-    
+
     /*if(game.nextPointWins() && game.leadingPlayer() - 1 == playerID) {
         io.sockets.emit('game.gamePoint', {
             player: playerID
@@ -417,7 +417,7 @@ gameController.prototype.scored = function(event) {
             player: game.leadingPlayer() - 1,
         });
     }*/
-    
+
     if(game.nextPointWins()) {
         io.sockets.emit('game.gamePoint', {
             player: game.leadingPlayer() - 1
@@ -438,7 +438,7 @@ gameController.prototype.scored = function(event) {
 
     // Is the next point a winning one?
     game.checkGamePoint();
-    
+
     game.updateStatus();
 };
 
@@ -448,38 +448,38 @@ gameController.prototype.scored = function(event) {
  * Remove point from a player
  */
 gameController.prototype.pointRemoved = function(event) {
-    
+
     if(!game.inProgress) return;
-    
+
     var playerID = event.data - 1;
-    
+
     if(game.score[playerID] > 0) {
-        
+
         game.score[playerID] --;
-        
+
         this.gameHistory.unshift({
             action: 'cancelPoint',
             player: playerID,
             score: this.score.slice()
         });
-        
+
         io.sockets.emit('game.cancelPoint', {
             player: playerID,
             score: game.score[playerID]
         });
-        
+
         io.sockets.emit('game.notGamePoint', {
             player: playerID
         });
-        
+
         if(game.checkWon()) {
             return;
         }
-        
+
         game.checkServerSwitch();
         game.checkGamePoint();
         game.updateStatus();
-        
+
     }
 
 };
@@ -499,9 +499,9 @@ gameController.prototype.checkWon = function() {
         game.end();
         return true;
     }
-    
+
     return false;
-    
+
 };
 
 
@@ -517,9 +517,9 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
         pointJustCancelled = this.gameHistory.length > 0 && this.gameHistory[0].action == 'cancelPoint',
         switchServer = totalScore % settings.serverSwitchLimit === 0 || this.serverSwitchThresholdMet() || typeof forceServe !== 'undefined',
         switchPreviousServer = (totalScore + 1) % settings.serverSwitchLimit === 0 && pointJustCancelled;
-    
+
     if(switchServer || switchPreviousServer) {
-        
+
         if(typeof forceServe !== 'undefined') {
             serve = forceServe;
         } else if(this.score[0] > 0 || this.score[1] > 0) {
@@ -539,7 +539,7 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
         io.sockets.emit('game.switchServer', {
             player: serve
         });
-        
+
     }
 };
 
@@ -610,23 +610,23 @@ gameController.prototype.nextPointWins = function() {
 gameController.prototype.checkGamePoint = function() {
 
     if(!this.nextPointWins()) return;
-    
+
     var _this = this;
-    
+
     io.sockets.emit('game.nextPointWins', {
         player: _this.leadingPlayer() - 1
     });
-    
+
     if(this.leadingPlayer() == 1) {
         io.sockets.emit("nextPointWins", { "player": 1 });
         console.log('Next point for player 1 wins');
     }
-    
+
     if(this.leadingPlayer() == 2) {
         io.sockets.emit("nextPointWins", { "player": 2 });
         console.log('Next point for player 2 wins');
     }
-    
+
 };
 
 

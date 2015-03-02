@@ -13,7 +13,7 @@
     "ampersand-state": "^4.3.9",
     "arpad": "^0.1.0",
     "async": "^0.9.0",
-    "bluebird": "^2.2.2",
+    "bluebird": "^2.9.12",
     "bookshelf": "^0.7.7",
     "browsernizr": "^1.0.2",
     "chalk": "^0.5.1",
