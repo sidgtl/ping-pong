@@ -9,6 +9,7 @@ var
     Player = require('../models/Player'),
     stats = require('../lib/stats').events,
     leaderboard = require('../lib/leaderboard'),
+    notifyIntegrations = require('../lib/notifyIntegrations'),
     players = [],
     serve,
     inProgress = false,
@@ -201,12 +202,39 @@ gameController.prototype.reset = function() {
 
 
 
+gameController.prototype.test = function() {
+
+    this.addPlayer(2);
+    this.addPlayer(4);
+
+    game.feelersOnline();
+    game.feelersPingReceived();
+
+    var play = function() {
+
+        var press = Math.round(Math.random()) + 1;
+        game.feelerPressed({ data: press });
+
+        if(!game.checkWon()) {
+            setTimeout(play, 100);
+        }
+
+    };
+
+    //play();
+
+};
+
+
+
 /**
  * End game and reset score
  */
 gameController.prototype.end = function(complete) {
 
-    complete = typeof complete == 'undefined' ? true : complete;
+    complete = typeof complete == 'undefined' ?
+        true :
+        complete;
 
     var
         _this = this,
@@ -217,7 +245,6 @@ gameController.prototype.end = function(complete) {
         io.sockets.emit('game.reset');
         return this.reset();
     }
-
 
     if(winningPlayer - 1 === 0) {
         updatedRanks = [elo.players[0].winningLeaderboardRank, elo.players[1].losingLeaderboardRank];
@@ -243,6 +270,8 @@ gameController.prototype.end = function(complete) {
         player1_score: game.score[1],
         score_delta: Math.abs(game.score[0] - game.score[1])
     });
+
+    notifyIntegrations(gameModel, players);
 
     // Add the game to the DB
     gameModel.save()
@@ -407,16 +436,6 @@ gameController.prototype.scored = function(event) {
         score: game.score[playerID],
         gameScore: game.score
     });
-
-    /*if(game.nextPointWins() && game.leadingPlayer() - 1 == playerID) {
-        io.sockets.emit('game.gamePoint', {
-            player: playerID
-        });
-    } else {
-        io.sockets.emit('game.notGamePoint', {
-            player: game.leadingPlayer() - 1,
-        });
-    }*/
 
     if(game.nextPointWins()) {
         io.sockets.emit('game.gamePoint', {

@@ -94,10 +94,13 @@ game = new gameController();
 game.feelersPingReceived();
 
 io.sockets.on('connection', function(client) {
+
     game.reset();
     game.clientJoined();
+
     cardReader.connectionStatus();
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing
+
 });
 
 core.on('scored', game.feelerPressed);
