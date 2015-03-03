@@ -128,12 +128,20 @@ gameController.prototype.addPlayer = function(playerID, custom) {
     Player.where(attr, value).fetch().then(function(player) {
 
         if(!player) {
+
             console.log(chalk.red('Player ' + value + ' not found'));
+
             io.sockets.emit('game.playerNotFound', {
                 attr: attr,
                 value: value
             });
+
+            if(hipChat && playerID.attr === 'rfid') {
+                hipChat.info('New bat scanned: ' + playerID.value);
+            }
+
             return;
+
         }
 
         if(players.length === settings.maxPlayers) {
