@@ -10,6 +10,7 @@ var
     stats = require('../lib/stats').events,
     leaderboard = require('../lib/leaderboard'),
     notifyIntegrations = require('../lib/notifyIntegrations'),
+    hipChat = require('../lib/hipChat'),
     players = [],
     serve,
     inProgress = false,
@@ -656,7 +657,13 @@ gameController.prototype.checkGamePoint = function() {
  * the client
  */
 gameController.prototype.batteryLow = function() {
+
     io.sockets.emit('core.batteryLow');
+
+    if(hipChat) {
+        hipChat.warning('Table batteries low');
+    }
+
 };
 
 
