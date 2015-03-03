@@ -136,8 +136,8 @@ gameController.prototype.addPlayer = function(playerID, custom) {
                 value: value
             });
 
-            if(hipChat && playerID.attr === 'rfid') {
-                hipChat.info('New bat scanned: ' + playerID.value);
+            if(hipChat && custom && custom.attr === 'rfid') {
+                hipChat.info('New bat scanned: ' + custom.value);
             }
 
             return;
