@@ -23,6 +23,7 @@
     "express": "^4.7.2",
     "hipchat-notify": "^1.0.2",
     "howler": "^1.1.25",
+    "immutable": "^3.6.2",
     "jade": "^1.5.0",
     "knex": "^0.6.22",
     "moment": "2.6.0",

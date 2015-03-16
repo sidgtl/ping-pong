@@ -55,7 +55,6 @@ app.get('/', function(req, res) {
 });
 
 app.get('/leaderboard', function(req, res) {
-    // This could use a streaming response instead
     leaderboard.get(10)
         .then(function(players) {
             res.json(players);
@@ -97,6 +96,7 @@ io.sockets.on('connection', function(client) {
 
     game.reset();
     game.clientJoined();
+    game.test();
 
     cardReader.connectionStatus();
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing

@@ -1,20 +1,24 @@
 var
     chalk = require('chalk'),
     debounce = require('debounce'),
+    immutable = require('immutable'),
     app = require('../app'),
-    elo = require('./eloComparator')(),
+    elo = require('../lib/eloCalculator'),
     settings = app.get('settings'),
     Feeler = require('./feelerController'),
     Game = require('../models/Game'),
     Player = require('../models/Player'),
     stats = require('../lib/stats').events,
     leaderboard = require('../lib/leaderboard'),
+    leaderboardCalculator = require('../lib/leaderboardCalculator'),
     notifyIntegrations = require('../lib/notifyIntegrations'),
     hipChat = require('../lib/hipChat'),
     players = [],
     serve,
     inProgress = false,
-    gameModel;
+    gameModel,
+    potentialElo,
+    potentialLeaderboard;
 
 
 
@@ -59,25 +63,6 @@ function gameController() {
 
     stats.on('mostFrequentPlayer', function(player) {
         io.sockets.emit('stats.mostFrequentPlayer', player);
-    });
-
-    elo.on('tip.playerWin', function(player) {
-
-        var
-            pronoun = 'them',
-            genderPronouns = {
-                male: 'him',
-                female: 'her'
-            };
-
-        if(player.gender) {
-            pronoun = genderPronouns[player.gender];
-        }
-
-        io.sockets.emit('game.message', {
-            message: 'A win for <span class="player-' + player.position + '">' + player.name + '</span> takes ' + pronoun + ' to rank ' + player.winningLeaderboardRank
-        });
-
     });
 
 }
@@ -159,7 +144,6 @@ gameController.prototype.addPlayer = function(playerID, custom) {
 
         players.push(player);
         position = players.indexOf(player);
-        elo.addPlayer(player, position);
 
         if(players.length === settings.minPlayers) {
             game.ready();
@@ -199,13 +183,15 @@ gameController.prototype.cardReadError = function() {
 gameController.prototype.reset = function() {
     gameModel = {};
     players = [];
+    potentialElo = null;
+    potentialLeaderboard = null;
     this.score = [0,0];
     player.playing = [];
     serve = undefined;
     this.inProgress = false;
     inProgress = false;
     this.gameHistory = [];
-    elo.reset();
+    //elo.reset();
     this.updateStatus();
 };
 
@@ -213,8 +199,8 @@ gameController.prototype.reset = function() {
 
 gameController.prototype.test = function() {
 
+    this.addPlayer(3);
     this.addPlayer(2);
-    this.addPlayer(4);
 
     game.feelersOnline();
     game.feelersPingReceived();
@@ -230,7 +216,7 @@ gameController.prototype.test = function() {
 
     };
 
-    //play();
+    play();
 
 };
 
@@ -248,6 +234,7 @@ gameController.prototype.end = function(complete) {
     var
         _this = this,
         winningPlayer = this.leadingPlayer(),
+        updatedElos = [],
         updatedRanks = [];
 
     if(!complete) {
@@ -255,10 +242,33 @@ gameController.prototype.end = function(complete) {
         return this.reset();
     }
 
+    console.log('potentialElo', potentialElo);
+    console.log('potentialLeaderboard', potentialLeaderboard);
+
     if(winningPlayer - 1 === 0) {
-        updatedRanks = [elo.players[0].winningLeaderboardRank, elo.players[1].losingLeaderboardRank];
+
+        updatedElos = [
+            potentialElo[0].winningElo,
+            potentialElo[1].losingElo
+        ];
+
+        updatedRanks = [
+            leaderboardRank(players[0].id, potentialLeaderboard[0]),
+            leaderboardRank(players[1].id, potentialLeaderboard[0])
+        ];
+
     } else {
-        updatedRanks = [elo.players[0].losingLeaderboardRank, elo.players[1].winningLeaderboardRank];
+
+        updatedElos = [
+            potentialElo[0].losingElo,
+            potentialElo[1].winningElo
+        ];
+
+        updatedRanks = [
+            leaderboardRank(players[0].id, potentialLeaderboard[1]),
+            leaderboardRank(players[1].id, potentialLeaderboard[1])
+        ];
+
     }
 
     io.sockets.emit('game.message', {
@@ -280,7 +290,7 @@ gameController.prototype.end = function(complete) {
         score_delta: Math.abs(game.score[0] - game.score[1])
     });
 
-    notifyIntegrations(gameModel, players);
+    //notifyIntegrations(gameModel, players);
 
     // Add the game to the DB
     gameModel.save()
@@ -291,11 +301,7 @@ gameController.prototype.end = function(complete) {
 
     players.forEach(function(player, i) {
 
-        if(i === winningPlayer - 1) {
-            player.set('elo', elo.players[i].winningRank);
-        } else {
-            player.set('elo', elo.players[i].losingRank);
-        }
+        player.set('elo', updatedElos[i]);
 
         // Increment play count
         player.set('play_count', player.get('play_count') + 1);
@@ -334,9 +340,7 @@ gameController.prototype.ready = function() {
         player1_id: players[1].get('id')
     });
 
-    leaderboard.get().then(function(leaderboard) {
-        elo.setLeaderboard(leaderboard);
-    });
+    this.getPotentialData();
 
     // Find the last game between the players
     Game.lastBetweenPlayers([players[0].get('id'), players[1].get('id')])
@@ -391,6 +395,152 @@ gameController.prototype.ready = function() {
             headToHead: scores
         });
     });
+
+};
+
+
+
+/**
+ * Get Potential Data
+ *
+ * Calculate leaderboard position and elo for both potential game scenarios.
+ */
+gameController.prototype.getPotentialData = function() {
+
+    var playersJson = players.map(function(player) {
+        return player.toJSON();
+    });
+
+    var ranks = _.clone(playersJson);
+
+    var getPlayerPosition = function(player, collection) {
+
+        var position;
+
+        collection.forEach(function(collectionPlayer, i) {
+            if(parseInt(collectionPlayer.id) === parseInt(player.id)) {
+                position = i;
+            }
+        });
+
+        return position;
+
+    };
+
+    potentialElo = elo(playersJson);
+
+    leaderboard.get()
+        .then(function(data) {
+
+            data = data.map(function(entry) {
+                return entry.toJSON();
+            });
+
+            potentialLeaderboard = leaderboardCalculator(playersJson, data);
+
+            ranks = ranks.map(function(player, i) {
+
+                var winningLeaderboard = i === 0 ?
+                    potentialLeaderboard[0] :
+                    potentialLeaderboard[1];
+
+                var losingLeaderboard = i === 0 ?
+                    potentialLeaderboard[1] :
+                    potentialLeaderboard[0];
+
+                player.rank = getPlayerPosition(player, data) + 1;
+                player.winningRank = getPlayerPosition(player, winningLeaderboard) + 1;
+                player.losingRank = getPlayerPosition(player, losingLeaderboard) + 1;
+
+                return player;
+
+            });
+
+            this.notifyPotentialRankChange(ranks);
+
+        }.bind(this));
+
+};
+
+
+
+/**
+ * Notify Potential Rank Change
+ *
+ * Notify the client if either players rank could change as a result of this game.
+ */
+gameController.prototype.notifyPotentialRankChange = function(ranks) {
+
+    var
+        biggestChange,
+        winningDelta,
+        losingDelta,
+        player;
+
+    /*
+     * Ranks is an array of players whose rank will change if they either win or
+     * lose the game.
+     */
+    ranks = ranks
+        .map(function(player) {
+
+            var
+                winDelta = Math.abs(player.rank - player.winningRank),
+                loseDelta = Math.abs(player.rank - player.losingRank);
+
+            if(winDelta > loseDelta) {
+                player.biggestDelta = winDelta;
+                player.biggestDeltaType = 'win';
+            } else {
+                player.biggestDelta = loseDelta;
+                player.biggestDeltaType = 'lose';
+            }
+
+            return player;
+
+        })
+        .filter(function(player) {
+            return player.biggestDelta > 0;
+        })
+        .sort(function(a, b) {
+            return b.biggestDelta - a.biggestDelta;
+        });
+
+    /*
+     * Players whose biggest potential rank change is if they win
+     */
+    winningDelta = ranks
+        .filter(function(player) {
+            return player.biggestDeltaType === 'win';
+        });
+
+    /*
+     * Players whose biggest potential rank change is if they lose
+     */
+    losingDelta = ranks
+        .filter(function(player) {
+            return player.biggestDeltaType === 'lose';
+        });
+
+    if(winningDelta.length > 0) {
+
+        player = winningDelta[0];
+
+        return io.sockets.emit('game.message', {
+            message: 'A win for <span class="player-' + position(player.id, players) + '">' + player.name + '</span> takes ' + pronoun(player.gender) + ' to rank ' + player.winningRank
+        });
+
+    }
+
+    if(losingDelta.length > 0) {
+
+        player = losingDelta[0];
+
+        return io.sockets.emit('game.message', {
+            message: 'A loss for <span class="player-' + position(player.id, players) + '">' + player.name + '</span> knocks ' + pronoun(player.gender) + ' to rank ' + player.losingRank
+        });
+
+    }
 
 };
 
@@ -709,3 +859,60 @@ gameController.prototype.updateStatus = function() {
 gameController.prototype.clientJoined = function() {
     stats.emit('client.join');
 };
+
+
+
+/**
+ * Pronoun
+ */
+function pronoun(gender) {
+
+    pronouns = {
+        male: 'him',
+        female: 'her'
+    };
+
+    return pronouns[gender] || 'them';
+
+}
+
+
+
+/**
+ * Position
+ *
+ * Determine the position of a player based on their id inside an array of player
+ * objects.
+ */
+function position(id, players) {
+
+    var pos = -1;
+
+    players.forEach(function(player, i) {
+        if(parseInt(player.id) === parseInt(id)) {
+            pos = i;
+        }
+    });
+
+    return pos;
+
+}
+
+
+
+/**
+ * Leaderboard Rank
+ */
+function leaderboardRank(id, leaderboard) {
+
+    var position = -1;
+
+    leaderboard.forEach(function(player, i) {
+        if(parseInt(id) === parseInt(player.id)) {
+            position = i + 1;
+        }
+    });
+
+    return position;
+
+}
