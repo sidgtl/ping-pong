@@ -75,6 +75,8 @@ app.get('/api/v1/stats', function(req, res) {
     BPromise.all(generators)
         .then(function(stats) {
 
+            console.log('ping', stats);
+
             stats.forEach(function(stat) {
                 output[stat.type] = stat.data;
             });
@@ -96,7 +98,7 @@ io.sockets.on('connection', function(client) {
 
     game.reset();
     game.clientJoined();
-    game.test();
+    //game.test();
 
     cardReader.connectionStatus();
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing

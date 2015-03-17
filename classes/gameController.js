@@ -53,6 +53,10 @@ function gameController() {
         io.sockets.emit('stats.mostConsecutiveLosses', streak);
     });
 
+    stats.on('stats.mostImprovedPlayer', function(player) {
+        io.sockets.emit('stats.mostImprovedPlayer', player);
+    });
+
     stats.on('largestWhooping', function(whooping) {
         io.sockets.emit('stats.largestWhooping', whooping);
     });
@@ -191,7 +195,6 @@ gameController.prototype.reset = function() {
     this.inProgress = false;
     inProgress = false;
     this.gameHistory = [];
-    //elo.reset();
     this.updateStatus();
 };
 
