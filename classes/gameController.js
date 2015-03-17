@@ -61,6 +61,10 @@ function gameController() {
         io.sockets.emit('stats.largestWhooping', whooping);
     });
 
+    stats.on('archNemesese', function(data) {
+        io.sockets.emit('stats.archNemesese', data);
+    });
+
     stats.on('totalCompanyGames', function(count) {
         io.sockets.emit('stats.totalCompanyGames', count);
     });

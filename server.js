@@ -78,8 +78,6 @@ app.get('/api/v1/stats', function(req, res) {
     BPromise.all(generators)
         .then(function(stats) {
 
-            console.log('ping', stats);
-
             stats.forEach(function(stat) {
                 output[stat.type] = stat.data;
             });

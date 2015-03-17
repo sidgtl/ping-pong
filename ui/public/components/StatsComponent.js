@@ -63,6 +63,10 @@ var StatsComponent = module.exports = React.createClass({
             _this.setState({ largestWhooping: whooping });
         });
 
+        node.socket.on('stats.archNemesese', function(data) {
+            _this.setState({ archNemesese: data });
+        });
+
         node.socket.on('stats.totalCompanyGames', function(count) {
             _this.setState({ totalCompanyGames: count });
         });
@@ -139,6 +143,7 @@ var StatsComponent = module.exports = React.createClass({
             mostFrequentPlayer,
             biggestWinningStreak,
             mostConsecutiveLosses,
+            archNemesese,
             mostImprovedPlayer,
             largestWhooping,
             totalCompanyGames,
@@ -287,7 +292,7 @@ var StatsComponent = module.exports = React.createClass({
                 );
             }
 
-            if(typeof this.state.largestWhooping !== 'undefined') {
+            /*if(typeof this.state.largestWhooping !== 'undefined') {
                 largestWhooping = (
                     <div className="stats__component stats__component--bordered" key="largest-whooping">
                         <span className="header stats__title">Largest Whooping</span>
@@ -300,6 +305,22 @@ var StatsComponent = module.exports = React.createClass({
                             {this.state.largestWhooping.scores[1]}
                             <span className="stat_score_player">{this.state.largestWhooping.players[1]}</span>
                         </div>
+                    </div>
+                );
+            }*/
+
+            if(typeof this.state.archNemesese !== 'undefined') {
+                archNemesese = (
+                    <div className="stats__component stats__component--bordered" key="largest-whooping">
+                        <span className="header stats__title">Arch Nemesese</span>
+                        <div className="stat_score">
+                            {this.state.archNemesese.players[0]}
+                        </div>
+                        <div className="stat_dash">-</div>
+                        <div className="stat_score">
+                            {this.state.archNemesese.players[1]}
+                        </div>
+                        <div className="header">{this.state.archNemesese.count} games</div>
                     </div>
                 );
             }
@@ -347,7 +368,7 @@ var StatsComponent = module.exports = React.createClass({
                             <ReactCSSTransitionGroup transitionName='stats__components'>
                                 {biggestWinningStreak}
                                 {mostImprovedPlayer}
-                                {largestWhooping}
+                                {archNemesese}
                                 {mostFrequentPlayer}
                             </ReactCSSTransitionGroup>
                         </div>
