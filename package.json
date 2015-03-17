@@ -18,6 +18,7 @@
     "browsernizr": "^1.0.2",
     "chalk": "^0.5.1",
     "cors": "^2.4.1",
+    "cron": "^1.0.9",
     "debounce": "^1.0.0",
     "emailjs": "0.3.8",
     "express": "^4.7.2",

@@ -9,6 +9,7 @@ var
     app = require('./app.js'),
     cardReader = require('./lib/cardReader'),
     leaderboard = require('./lib/leaderboard'),
+    leaderboardCron = require('./lib/leaderboardCron'),
     stats = require('./lib/stats').stats;
 
 getConfig = require('./config');
@@ -26,6 +27,8 @@ io = require('socket.io');
 moment = require('moment');
 spark = require('sparknode');
 core = new spark.Core(settings.sparkCore);
+
+leaderboardCron();
 
 gameController = require('./classes/gameController');
 
