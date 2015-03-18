@@ -293,7 +293,7 @@ gameController.prototype.end = function(complete) {
         score_delta: Math.abs(game.score[0] - game.score[1])
     });
 
-    //notifyIntegrations(gameModel, players);
+    notifyIntegrations(gameModel, players);
 
     // Add the game to the DB
     gameModel.save()
