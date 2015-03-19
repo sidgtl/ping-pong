@@ -301,6 +301,14 @@ body {
         line-height: 46px;
         margin: 0;
     }
+    .stat_switches {
+        position: relative;
+        min-height: 55px;
+    }
+    .stat_switches__stat {
+        position: absolute;
+        width: 100%;
+    }
     .stats_right {
         float: right;
     }
@@ -402,10 +410,31 @@ body {
     opacity: 1;
 }
 
+.stats__switcher-enter {
+    opacity: 0;
+    transform: translate3d(50%, 0, 0);
+}
+
+.stats__switcher-enter.stats__switcher-enter-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.stats__switcher-leave.stats__switcher-leave-active {
+    opacity: 0;
+    transform: translate3d(-50%, 0, 0);
+}
+
+.stats__switcher-enter.stats__switcher-enter-active,
+.stats__switcher-leave {
+    transition: all 600ms;
+}
+
 .stats__group {
     position: absolute;
     width: 50%;
     height: 100%;
+    overflow: hidden;
 }
 
 .stats__component {

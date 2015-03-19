@@ -22,6 +22,7 @@ var StatsComponent = module.exports = React.createClass({
         return {
             fullView: true,
             playersFirstGame: undefined,
+            visibleNemesese: 0,
             lastGame: undefined,
             winner: undefined,
             headToHead: undefined,
@@ -63,8 +64,8 @@ var StatsComponent = module.exports = React.createClass({
             _this.setState({ largestWhooping: whooping });
         });
 
-        node.socket.on('stats.archNemesese', function(data) {
-            _this.setState({ archNemesese: data });
+        node.socket.on('stats.nemesese', function(data) {
+            _this.setState({ nemesese: data });
         });
 
         node.socket.on('stats.totalCompanyGames', function(count) {
@@ -79,6 +80,40 @@ var StatsComponent = module.exports = React.createClass({
         node.socket.on('game.end', _this.end);
         node.socket.on('game.reset', _this.reset);
 
+        this.statTimer();
+
+    },
+
+
+
+    componentWillUnmount: function() {
+        this.statTimerEnd();
+    },
+
+
+
+    statTimer: function() {
+
+        if(this.state.nemesese && document.hasFocus()) {
+
+            var visible = ( this.state.visibleNemesese + 1 ) < this.state.nemesese.length ?
+                this.state.visibleNemesese + 1 :
+                0;
+
+            this.setState({
+                visibleNemesese: visible
+            });
+
+        }
+
+        setTimeout(this.statTimer, 5000);
+
+    },
+
+
+    statTimerEnd: function() {
+        clearTimeout(this.statTimerInterval);
+        this.statTimerInterval = null;
     },
 
 
@@ -143,7 +178,7 @@ var StatsComponent = module.exports = React.createClass({
             mostFrequentPlayer,
             biggestWinningStreak,
             mostConsecutiveLosses,
-            archNemesese,
+            nemesese,
             mostImprovedPlayer,
             largestWhooping,
             totalCompanyGames,
@@ -286,8 +321,6 @@ var StatsComponent = module.exports = React.createClass({
                     <div className="stats__component stats__component--bordered" key="most-improved-player">
                         <span className="header stats__title">Most Improved Player</span>
                         <div className="stat_score">{this.state.mostImprovedPlayer.name}</div>
-                        <div className="stat_dash">-</div>
-                        <div className="stat_score">{this.state.mostImprovedPlayer.performanceDelta.percentage}%</div>
                     </div>
                 );
             }
@@ -309,18 +342,29 @@ var StatsComponent = module.exports = React.createClass({
                 );
             }*/
 
-            if(typeof this.state.archNemesese !== 'undefined') {
-                archNemesese = (
-                    <div className="stats__component stats__component--bordered" key="largest-whooping">
+            if(typeof this.state.nemesese !== 'undefined') {
+                nemesese = (
+                    <div className="stats__component stats__component--bordered" key="nemesese">
                         <span className="header stats__title">Arch Nemesese</span>
-                        <div className="stat_score">
-                            {this.state.archNemesese.players[0]}
+                        <div className='stat_switches'>
+                            <ReactCSSTransitionGroup transitionName='stats__switcher'>
+                                {
+                                    this.state.nemesese
+                                        .filter(function(pair, i) {
+                                            return this.state.visibleNemesese === i;
+                                        }.bind(this))
+                                        .map(function(pair) {
+                                            return (
+                                                <div key={pair.player} className='stat_switches__stat'>
+                                                    <div className='stat_score'>{pair.player}</div>
+                                                    <div className="stat_dash">-</div>
+                                                    <div className='stat_score'>{pair.nemesis}</div>
+                                                </div>
+                                            );
+                                        })
+                                }
+                            </ReactCSSTransitionGroup>
                         </div>
-                        <div className="stat_dash">-</div>
-                        <div className="stat_score">
-                            {this.state.archNemesese.players[1]}
-                        </div>
-                        <div className="header">{this.state.archNemesese.count} games</div>
                     </div>
                 );
             }
@@ -368,7 +412,7 @@ var StatsComponent = module.exports = React.createClass({
                             <ReactCSSTransitionGroup transitionName='stats__components'>
                                 {biggestWinningStreak}
                                 {mostImprovedPlayer}
-                                {archNemesese}
+                                {nemesese}
                                 {mostFrequentPlayer}
                             </ReactCSSTransitionGroup>
                         </div>
