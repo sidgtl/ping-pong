@@ -5,13 +5,13 @@ module.exports = {
         wsPort: undefined,
         cardReaderPort: undefined,
         database: {
-            client: 'mysql',
+            client: 'pg',
             connection: {
-                host: undefined,
-                port: undefined,
-                user: undefined,
-                password: undefined,
-                database: undefined,
+                host: 127.0.0.1,
+                port: 5432,
+                user: 'postgres',
+                password: 'Fyk69W3VjJmbvjFGbzvz',
+                database: 'node',
             },
             migrations: {
                 directory: __dirname + '/migrations',
