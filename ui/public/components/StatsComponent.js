@@ -367,7 +367,6 @@ var StatsComponent = module.exports = React.createClass({
             if(typeof this.state.nemesese !== 'undefined') {
                 nemesese = (
                     <div className="stats__component stats__component--bordered" key="nemesese">
-                        <span className="header stats__title">Arch Nemesese</span>
                         <div className='stat_switches'>
                             <ReactCSSTransitionGroup transitionName='stats__switcher'>
                                 {
@@ -378,14 +377,21 @@ var StatsComponent = module.exports = React.createClass({
                                         .map(function(pair) {
                                             return (
                                                 <div key={pair.player} className='stat_switches__stat'>
-                                                    <div className='stat_score'>{pair.player}</div>
-                                                    <div className="stat_dash">-</div>
-                                                    <div className='stat_score'>{pair.nemesis}</div>
+                                                    <span className="header stats__title">{pair.player}'s Archnemesis</span>
+                                                    <div>
+                                                        <div className='stat_score'>{pair.nemesis}</div>
+                                                    </div>
                                                 </div>
                                             );
                                         })
                                 }
                             </ReactCSSTransitionGroup>
+                            <div>
+                                <span className="header stats__title">&nbsp;</span>
+                                <div>
+                                    <div className='stat_score'>&nbsp;</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
