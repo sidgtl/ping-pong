@@ -76,6 +76,10 @@ var StatsComponent = module.exports = React.createClass({
             _this.setState({ mostFrequentPlayer: player });
         });
 
+        node.socket.on('stats.greatestGameScore', function(data) {
+            _this.setState({ greatestGameScore: data });
+        });
+
         node.socket.on('leaderboard.hide', _this.showCompactView);
         node.socket.on('game.end', _this.end);
         node.socket.on('game.reset', _this.reset);
@@ -175,7 +179,8 @@ var StatsComponent = module.exports = React.createClass({
             firstMatch,
             leaderboard,
             logo,
-            mostFrequentPlayer,
+            //mostFrequentPlayer,
+            greatestGameScore,
             biggestWinningStreak,
             mostConsecutiveLosses,
             nemesese,
@@ -285,11 +290,28 @@ var StatsComponent = module.exports = React.createClass({
                 </div>
             );
 
-            if(typeof this.state.mostFrequentPlayer !== 'undefined') {
+            /*if(typeof this.state.mostFrequentPlayer !== 'undefined') {
                 mostFrequentPlayer = (
                     <div className="stats__component stats__component--pin-bottom" key="league-form-player">
                         <span className="header stats__title">Most Frequent Player</span>
                         <div className="stat_score">{this.state.mostFrequentPlayer}</div>
+                    </div>
+                );
+            }*/
+
+            if(typeof this.state.greatestGameScore !== 'undefined') {
+                greatestGameScore = (
+                    <div className="stats__component stats__component--bordered" key="largest-whooping">
+                        <span className="header stats__title">Highest Scoring Game</span>
+                        <div className="stat_score">
+                            {this.state.greatestGameScore[0].score}
+                            <span className="stat_score_player">{this.state.greatestGameScore[0].name}</span>
+                        </div>
+                        <div className="stat_dash">-</div>
+                        <div className="stat_score">
+                            {this.state.greatestGameScore[1].score}
+                            <span className="stat_score_player">{this.state.greatestGameScore[1].name}</span>
+                        </div>
                     </div>
                 );
             }
@@ -413,7 +435,7 @@ var StatsComponent = module.exports = React.createClass({
                                 {biggestWinningStreak}
                                 {mostImprovedPlayer}
                                 {nemesese}
-                                {mostFrequentPlayer}
+                                {greatestGameScore}
                             </ReactCSSTransitionGroup>
                         </div>
                     </div>

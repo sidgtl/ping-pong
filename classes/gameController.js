@@ -73,6 +73,10 @@ function gameController() {
         io.sockets.emit('stats.mostFrequentPlayer', player);
     });
 
+    stats.on('greatestGameScore', function(data) {
+        io.sockets.emit('stats.greatestGameScore', data);
+    });
+
 }
 
 
