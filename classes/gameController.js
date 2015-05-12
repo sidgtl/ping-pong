@@ -253,9 +253,6 @@ gameController.prototype.end = function(complete) {
         return this.reset();
     }
 
-    console.log('potentialElo', potentialElo);
-    console.log('potentialLeaderboard', potentialLeaderboard);
-
     if(winningPlayer - 1 === 0) {
 
         updatedElos = [
