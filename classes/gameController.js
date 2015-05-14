@@ -13,6 +13,8 @@ var
     leaderboardCalculator = require('../lib/leaderboardCalculator'),
     notifyIntegrations = require('../lib/notifyIntegrations'),
     hipChat = require('../lib/hipChat'),
+    tableWarning,
+    tableConnected,
     players = [],
     serve,
     inProgress = false,
@@ -287,9 +289,21 @@ gameController.prototype.end = function(complete) {
         winner: winningPlayer - 1
     });
 
+    /**
+     * Reset the game UI
+     */
     setTimeout(function() {
         io.sockets.emit('game.reset');
     }, settings.winningViewDuration + 200);
+
+    /**
+     * Notify table left on
+     */
+    tableWarning = setTimeout(function() {
+        if(tableConnected) {
+            hipChat.warning('Table still on');
+        }
+    }, 1 * 1000 * 60);
 
     gameModel.set({
         winner_id: players[winningPlayer - 1].id,
@@ -566,6 +580,7 @@ gameController.prototype.start = function(startingServe) {
     }
 
     gameModel.start();
+    clearTimeout(tableWarning);
     game.checkServerSwitch(startingServe);
     game.inProgress = true;
     inProgress = true;
@@ -839,10 +854,12 @@ gameController.prototype.batteryLow = function() {
  */
 var debounceFeelers = debounce(function() {
     io.sockets.emit('feelers.disconnect');
+    tableConnected = false;
     debounceFeelers();
 }, settings.feelers.pingInterval + settings.feelers.pingThreshold);
 
 gameController.prototype.feelersPingReceived = function() {
+    tableConnected = true;
     io.sockets.emit('feelers.connect');
     debounceFeelers();
 };
