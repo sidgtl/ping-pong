@@ -58,7 +58,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/leaderboard', function(req, res) {
-    leaderboard.get(10)
+    leaderboard.get(8)
         .then(function(players) {
             res.json(players);
         });
