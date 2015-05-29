@@ -4,7 +4,7 @@ var
     chalk = require('chalk'),
     jade = require('jade'),
     serveStatic = require('serve-static'),
-   // environment = process.env.NODE_ENV = process.env.NODE_ENV || 'production',
+    // environment = process.env.NODE_ENV = process.env.NODE_ENV || 'production',
     environment = 'development',
     app = require('./app.js'),
     cardReader = require('./lib/cardReader'),
