@@ -4,7 +4,8 @@ var
     chalk = require('chalk'),
     jade = require('jade'),
     serveStatic = require('serve-static'),
-    environment = process.env.NODE_ENV = process.env.NODE_ENV || 'production',
+   // environment = process.env.NODE_ENV = process.env.NODE_ENV || 'production',
+    environment = 'development',
     app = require('./app.js'),
     cardReader = require('./lib/cardReader'),
     leaderboard = require('./lib/leaderboard');
@@ -22,8 +23,8 @@ app.locals.settings = settings;
 _ = require('underscore');
 io = require('socket.io');
 moment = require('moment');
-spark = require('sparknode');
-core = new spark.Core(settings.sparkCore);
+//spark = require('sparknode');
+//core = new spark.Core(settings.sparkCore);
 
 gameController = require('./classes/gameController');
 
@@ -73,9 +74,9 @@ io.sockets.on('connection', function(client) {
     cardReader.connectionStatus();
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing
 });
-
+/*
 core.on('scored', game.feelerPressed);
-core.on('ping', game.feelersPingReceived);    
+core.on('ping', game.feelersPingReceived);
 core.on('batteryLow', game.batteryLow);
 
 core.on('online', function() {
@@ -83,6 +84,7 @@ core.on('online', function() {
     game.feelerStatus();
     game.feelersPingReceived();
 });
+*/
 
 cardReader.on('read', function(data) {
     console.log('New read', data);
