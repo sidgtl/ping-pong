@@ -7,7 +7,7 @@
     .box-sizing(border-box);
 }
 ::selection {
-    background: @colorPink;
+    background: @colorOrange;
     color: #FFF;
     text-shadow: none;
 }
@@ -52,7 +52,7 @@ body {
     width: 100%;
     height: 100%;
     font-size: 19px;
-    font-family: "futura-pt-condensed",sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     line-height: 100%;
     color: #FFF;
@@ -80,7 +80,7 @@ body {
     }
 
     .player-1 {
-        color: @colorPink;
+        color: @colorOrange;
     }
 
 }
@@ -155,7 +155,7 @@ body {
     }
     &.player_1 {
         right: 0;
-        background-color: #ec1164;
+        background-color: @colorOrange;
         border-left: 1px solid #FFF;
     }
     .status {
@@ -279,7 +279,7 @@ body {
         vertical-align: top;
         font-weight: 700;
         margin: 0 15px 0 15px;
-        font-size: 60px;
+        font-size: @baseFont;
         line-height: 56px;
     }
     .stat_score_player {
@@ -293,11 +293,11 @@ body {
         color: @colorLightBlue;
     }
     .stat_score:last-child .stat_score_player {
-        color: @colorPink;
+        color: @colorOrange;
     }
     .stat_dash {
         display: inline-block;
-        font-size: 60px;
+        font-size: @baseFont;
         line-height: 46px;
         margin: 0;
     }
@@ -410,7 +410,7 @@ body {
 
 .stats__component {
     position: relative;
-    margin-bottom: 37px;
+    margin-bottom: @statSpacing;
 }
 
 .stats__component--pin-bottom {
@@ -421,7 +421,7 @@ body {
 }
 
 .stats__component--bordered {
-    padding-bottom: 36px;
+    padding-bottom: @statSpacing;
     
     &:after {
         position: absolute;
@@ -441,8 +441,7 @@ body {
 }
 
 .leaderboard {
-    width: 50%;
-    max-width: 200px;
+    width: 70%;
     margin: 0 auto;
     text-align: left;
 }
@@ -457,9 +456,13 @@ body {
 }
 
 .leaderboard__player__name {
-    font-size: 60px;
+    font-size: @baseFont;
     line-height: 56px;
     font-weight: 700;
+
+  .elo {
+    font-size: @smaller;
+  }
 }
 
 .leaderboard__player:nth-child(even) {

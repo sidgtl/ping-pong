@@ -50,7 +50,7 @@ gulp.task('main.js', function() {
     
     // Add  third party libs. We don't want Browserify to parse them because they
     // aren't setup to use Browserify - we'd just be wasting time.
-    bundle.add(paths.js + '/third_party/typekit.js', { noparse: true });
+    bundle.add(paths.js + '/third_party/font.js', { noparse: true });
     
     // Add the main.js file
     bundle.add(paths.js + '/main.js');
