@@ -95,7 +95,7 @@ gameController.prototype.feelerStatus = function(data) {
  * The feelers connected
  */
 gameController.prototype.feelersOnline = function() {
-    io.sockets.emit('core.online');
+    //io.sockets.emit('core.online');
 };
 
 
@@ -627,7 +627,7 @@ gameController.prototype.checkGamePoint = function() {
  * the client
  */
 gameController.prototype.batteryLow = function() {
-    io.sockets.emit('core.batteryLow');
+    //io.sockets.emit('core.batteryLow');
 };
 
 

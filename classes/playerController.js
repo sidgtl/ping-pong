@@ -6,7 +6,7 @@ var
 exports.addPlayer = function addPlayer(playerID) {
 
     console.log(playerID); return;
-    
+
     // Have we already reached 2 players?
     if(this.playing.length >= 2) {
         game.reset();
@@ -14,7 +14,7 @@ exports.addPlayer = function addPlayer(playerID) {
 
     this.playing.push(playerID);
 
-    socket.emit("newPlayer", { 
+    socket.emit("newPlayer", {
         "name": player.list[playerID].name,
         "position": this.playing.length
     });

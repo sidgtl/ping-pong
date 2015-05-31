@@ -74,7 +74,7 @@ var GameComponent = module.exports = React.createClass({
         
         node.socket.on('feelers.disconnect', _this.tableDisconnected);
         node.socket.on('feelers.connect', _this.tableConnected);
-        node.socket.on('core.batteryLow', _this.tableBatteryLow);
+        //node.socket.on('core.batteryLow', _this.tableBatteryLow);
         
         node.socket.on('cardReader.connect', _this.cardReaderConnected);
         node.socket.on('cardReader.disconnect', _this.cardReaderDisconnected);
@@ -153,11 +153,11 @@ var GameComponent = module.exports = React.createClass({
         this.queueSound('game-point-' + playerSound.toLowerCase());
         
     },
-    
-    
-    
+
+
+    // temp comment out til sounds are working
     announceScore: function() {
-    
+/*
         var announcement = this.state.score;
         
         if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
@@ -165,13 +165,15 @@ var GameComponent = module.exports = React.createClass({
             // Announce the server's score first
             if(this.state.server == 1) {
                 announcement.reverse();
+
+
             }
-            
+
             this.queueSound('' + announcement[0], -300);
             this.queueSound('' + announcement[1]);
-            
+
         }
-    
+*/
     },
     
     
@@ -265,7 +267,7 @@ var GameComponent = module.exports = React.createClass({
         }
         
         soundsPlaying = true;
-        
+
         play = function() {
             
             var
@@ -290,7 +292,7 @@ var GameComponent = module.exports = React.createClass({
 
         }
 
-        play();
+        //play();
 
     },
     

@@ -30,50 +30,50 @@ var PlayerComponent = module.exports = React.createClass({
 
 
     componentDidMount: function() {
-        
+        /*
         var
             _this = this,
             positionNS = 'player' + _this.props.positionId;
-        
-        this.props.player.on('change', function(player) {
+
+        this.props.player.on('change', function (player) {
             _this.join(player);
         });
-        
-        node.socket.on('game.score', function(data) {
-            if(data.player == _this.props.positionId) {
+
+        node.socket.on('game.score', function (data) {
+            if (data.player == _this.props.positionId) {
                 _this.score(data.score);
             }
         });
-        
-        node.socket.on('game.gamePoint', function(data) {
-            if(data.player == _this.props.positionId) {
+
+        node.socket.on('game.gamePoint', function (data) {
+            if (data.player == _this.props.positionId) {
                 _this.gamePoint();
             } else {
                 _this.gamePoint(false);
             }
         });
-        
-        node.socket.on('game.notGamePoint', function() {
+
+        node.socket.on('game.notGamePoint', function () {
             _this.gamePoint(false);
         });
-        
-        node.socket.on('game.cancelPoint', function(data) {
-            if(data.player == _this.props.positionId) {
+
+        node.socket.on('game.cancelPoint', function (data) {
+            if (data.player == _this.props.positionId) {
                 _this.cancelPoint(data.score);
             }
         });
 
-        node.socket.on('game.end', function(data) {
-            if(data.winner == _this.props.positionId) {
+        node.socket.on('game.end', function (data) {
+            if (data.winner == _this.props.positionId) {
                 return _this.win();
             }
             _this.lose();
         });
 
-        node.socket.on('game.reset', function() {
+        node.socket.on('game.reset', function () {
             setTimeout(_this.reset, 1500);
         });
-
+        */
     },
 
 

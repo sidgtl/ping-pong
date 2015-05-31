@@ -42,35 +42,35 @@ var StatsComponent = module.exports = React.createClass({
         node.socket.on('stats.lastGameBetweenPlayers', function(data) {
             _this.lastGameBetweenPlayers(data.lastGame);
         });
-        
+
         node.socket.on('stats.headToHead', function(data) {
             _this.headToHead(data.headToHead);
         });
-        
+
         node.socket.on('stats.biggestWinningStreak', function(streak) {
             _this.setState({ biggestWinningStreak: streak });
         });
-        
+
         node.socket.on('stats.mostConsecutiveLosses', function(streak) {
             _this.setState({ mostConsecutiveLosses: streak });
         });
-        
+
         node.socket.on('stats.largestWhooping', function(whooping) {
             _this.setState({ largestWhooping: whooping });
         });
-        
+
         node.socket.on('stats.totalCompanyGames', function(count) {
             _this.setState({ totalCompanyGames: count });
         });
-        
+
         node.socket.on('stats.mostFrequentPlayer', function(player) {
             _this.setState({ mostFrequentPlayer: player });
         });
-        
+
         node.socket.on('leaderboard.hide', _this.showCompactView);
         node.socket.on('game.end', _this.end);
         node.socket.on('game.reset', _this.reset);
-        
+
     },
     
     
