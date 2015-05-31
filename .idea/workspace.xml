@@ -2,18 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a1238b20-69f1-497f-88b1-0fe240e45d5c" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ui/public/build/main.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/ui/public/build/main-8c7ad259.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/Game.js" afterPath="$PROJECT_DIR$/models/Game.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/public/components/GameComponent.js" afterPath="$PROJECT_DIR$/ui/public/components/GameComponent.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/public/components/PlayerComponent.js" afterPath="$PROJECT_DIR$/ui/public/components/PlayerComponent.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/public/components/StatsComponent.js" afterPath="$PROJECT_DIR$/ui/public/components/StatsComponent.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/public/components/StatusComponent.js" afterPath="$PROJECT_DIR$/ui/public/components/StatusComponent.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.js" afterPath="$PROJECT_DIR$/config.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/feelerController.js" afterPath="$PROJECT_DIR$/classes/feelerController.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/gameController.js" afterPath="$PROJECT_DIR$/classes/gameController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/home.jade" afterPath="$PROJECT_DIR$/views/home.jade" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/versions/js.json" afterPath="$PROJECT_DIR$/versions/js.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/public/js/node.js" afterPath="$PROJECT_DIR$/ui/public/js/node.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/playerController.js" afterPath="$PROJECT_DIR$/classes/playerController.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/public/build/main.js.map" afterPath="$PROJECT_DIR$/ui/public/build/main.js.map" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="pingpong.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -51,8 +50,18 @@
       <file leaf-file-name="gameController.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classes/gameController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2055" max-vertical-offset="10080">
-              <caret line="149" column="29" selection-start-line="149" selection-start-column="29" selection-end-line="149" selection-end-column="29" />
+            <state vertical-scroll-proportion="-6.9259257" vertical-offset="5903" max-vertical-offset="10125">
+              <caret line="406" column="61" selection-start-line="406" selection-start-column="61" selection-end-line="406" selection-end-column="61" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="feelerController.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/classes/feelerController.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-16.11111" vertical-offset="390" max-vertical-offset="930">
+              <caret line="55" column="78" selection-start-line="55" selection-start-column="78" selection-end-line="55" selection-end-column="78" />
               <folding />
             </state>
           </provider>
@@ -61,18 +70,38 @@
       <file leaf-file-name="server.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1226" max-vertical-offset="2145">
-              <caret line="99" column="19" selection-start-line="99" selection-start-column="19" selection-end-line="99" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="776" max-vertical-offset="1950">
+              <caret line="95" column="3" selection-start-line="95" selection-start-column="3" selection-end-line="95" selection-end-column="3" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameComponent.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GameComponent.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/public/components/GameComponent.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8839458" vertical-offset="3953" max-vertical-offset="5190">
-              <caret line="294" column="10" selection-start-line="294" selection-start-column="10" selection-end-line="294" selection-end-column="10" />
+            <state vertical-scroll-proportion="-9.703704" vertical-offset="4733" max-vertical-offset="5280">
+              <caret line="333" column="43" selection-start-line="333" selection-start-column="42" selection-end-line="333" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PlayerComponent.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ui/public/components/PlayerComponent.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="3840">
+              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="StatsComponent.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ui/public/components/StatsComponent.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.53125" vertical-offset="791" max-vertical-offset="5265">
+              <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -90,19 +119,21 @@
         <option value="$PROJECT_DIR$/lib/cardReader.js" />
         <option value="$PROJECT_DIR$/views/home.jade" />
         <option value="$PROJECT_DIR$/classes/playerController.js" />
-        <option value="$PROJECT_DIR$/ui/public/components/PlayerComponent.js" />
         <option value="$PROJECT_DIR$/node_modules/.bin/sn" />
         <option value="$PROJECT_DIR$/node_modules/ampersand-state/node_modules/ampersand-events/node_modules/lodash.once/LICENSE.txt" />
         <option value="$PROJECT_DIR$/node_modules/ampersand-state/node_modules/ampersand-events/node_modules/lodash.once/index.js" />
         <option value="$PROJECT_DIR$/node_modules/ampersand-state/node_modules/ampersand-events/node_modules/lodash.once/node_modules/lodash.before/LICENSE.txt" />
         <option value="$PROJECT_DIR$/node_modules/ampersand-state/node_modules/ampersand-events/node_modules/lodash.once/node_modules/lodash.before/index.js" />
-        <option value="$PROJECT_DIR$/classes/gameController.js" />
-        <option value="$PROJECT_DIR$/ui/public/components/StatsComponent.js" />
         <option value="$PROJECT_DIR$/ui/public/components/StatusComponent.js" />
         <option value="$PROJECT_DIR$/config.js" />
         <option value="$PROJECT_DIR$/ui/public/js/node.js" />
         <option value="$PROJECT_DIR$/server.js" />
+        <option value="$PROJECT_DIR$/models/Game.js" />
+        <option value="$PROJECT_DIR$/classes/feelerController.js" />
+        <option value="$PROJECT_DIR$/classes/gameController.js" />
         <option value="$PROJECT_DIR$/ui/public/components/GameComponent.js" />
+        <option value="$PROJECT_DIR$/ui/public/components/PlayerComponent.js" />
+        <option value="$PROJECT_DIR$/ui/public/components/StatsComponent.js" />
       </list>
     </option>
   </component>
@@ -233,6 +264,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pingpong" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pingpong" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="models" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -496,14 +541,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/public/components/PlayerComponent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="326" max-vertical-offset="3840">
-          <caret line="75" column="10" selection-start-line="75" selection-start-column="10" selection-end-line="75" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/ampersand-state/node_modules/lodash.assign/LICENSE.txt">
       <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
         <state />
@@ -575,14 +612,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classes/feelerController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="915">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ui/public/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="544">
@@ -595,14 +624,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3326886" vertical-offset="3398" max-vertical-offset="6780">
           <caret line="238" column="9" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/public/components/StatsComponent.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.0947776" vertical-offset="4748" max-vertical-offset="5265">
-          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -647,30 +668,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/public/js/node.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="1485">
-          <caret line="25" column="7" selection-start-line="25" selection-start-column="7" selection-end-line="25" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1226" max-vertical-offset="2145">
-          <caret line="99" column="19" selection-start-line="99" selection-start-column="19" selection-end-line="99" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classes/gameController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2055" max-vertical-offset="10080">
-          <caret line="149" column="29" selection-start-line="149" selection-start-column="29" selection-end-line="149" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.38602942" vertical-offset="0" max-vertical-offset="1035">
@@ -687,10 +684,74 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ui/public/js/node.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="1485">
+          <caret line="25" column="7" selection-start-line="25" selection-start-column="7" selection-end-line="25" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="776" max-vertical-offset="1950">
+          <caret line="95" column="3" selection-start-line="95" selection-start-column="3" selection-end-line="95" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/Player.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2835">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/Game.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.40625" vertical-offset="701" max-vertical-offset="1245">
+          <caret line="32" column="43" selection-start-line="32" selection-start-column="43" selection-end-line="32" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classes/feelerController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.11111" vertical-offset="390" max-vertical-offset="930">
+          <caret line="55" column="78" selection-start-line="55" selection-start-column="78" selection-end-line="55" selection-end-column="78" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classes/gameController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.9259257" vertical-offset="5903" max-vertical-offset="10125">
+          <caret line="406" column="61" selection-start-line="406" selection-start-column="61" selection-end-line="406" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ui/public/components/GameComponent.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8839458" vertical-offset="3953" max-vertical-offset="5190">
-          <caret line="294" column="10" selection-start-line="294" selection-start-column="10" selection-end-line="294" selection-end-column="10" />
+        <state vertical-scroll-proportion="-9.703704" vertical-offset="4733" max-vertical-offset="5280">
+          <caret line="333" column="43" selection-start-line="333" selection-start-column="42" selection-end-line="333" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/public/components/PlayerComponent.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="3840">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/public/components/StatsComponent.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.53125" vertical-offset="791" max-vertical-offset="5265">
+          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
           <folding />
         </state>
       </provider>

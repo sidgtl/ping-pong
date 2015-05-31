@@ -50,24 +50,6 @@ app.get('/', function(req, res) {
         JSVersions: require('./versions/js'),
         CSSVersions: require('./versions/css')
     });
-
-//TEMP. This block should fire whenever a viewer is on the website. for now, lets simulate that as a player joining the game
-    /*
-    if(this.i) {
-        this.i++;
-    }
-    else {
-        this.i = 1;
-    }
-    game.addPlayer(i, {
-        attr: 'rfid',
-        value: this.i
-    });
-
-    if(this.i == 3) {
-        game.ready();
-    }
-*/
 });
 
 app.get('/leaderboard', function(req, res) {
@@ -92,7 +74,7 @@ io.sockets.on('connection', function(client) {
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing
 
 
-    // fake client joining on key press for testing
+    // fake client joining for testing
     if(this.i) {
         this.i++;
     }
@@ -100,10 +82,15 @@ io.sockets.on('connection', function(client) {
         this.i = 1;
     }
 
-    game.addPlayer(this.i, {
-        attr: 'rfid',
-        value: this.i
-    });
+    // for now, only add up to 2 players on page loads
+    if(this.i <= 2) {
+        game.addPlayer(this.i, {
+            attr: 'rfid',
+            value: this.i
+        });
+    }
+
+
 
     console.log("connection");
 });

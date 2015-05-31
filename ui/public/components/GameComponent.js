@@ -64,10 +64,14 @@ var GameComponent = module.exports = React.createClass({
         sounds = new Howl(soundSprite);
         
         node.socket.on('game.end', _this.end);
-        node.socket.on('game.score', _this.score);
+        //node.socket.on('game.score', _this.score);
         node.socket.on('game.reset', _this.reset);
         node.socket.on('game.gamePoint', _this.gamePoint);
-        
+
+        node.socket.on('game.score', function(data) {
+            _this.score(data);
+        });
+
         node.socket.on('game.switchServer', function(data) {
             _this.switchServer(data.player);
         });
@@ -92,7 +96,7 @@ var GameComponent = module.exports = React.createClass({
 
 
     switchServer: function(player) {
-        
+        console.log("switching server");
         var
             _this = this,
             playerSound = '';
@@ -116,12 +120,14 @@ var GameComponent = module.exports = React.createClass({
     
     
     score: function(data) {
-
+        console.log("updating score and setting state");
         var _this = this;
 
         this.setState({
             score: data.gameScore
         });
+
+        console.log("gameScore: " + data.gameScore);
 
         // This is really counterintuitive, and far from a permanent
         // solution. This small delay allows us to cancel the score
@@ -305,7 +311,7 @@ var GameComponent = module.exports = React.createClass({
 
 
     reset: function() {
-
+        console.log("reset");
         setTimeout(function() {
             for(var prop in playerProps) {
                 player0.unset(prop);
