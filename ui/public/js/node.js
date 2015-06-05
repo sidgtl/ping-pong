@@ -24,6 +24,12 @@ function nodeController(options) {
             _this.socket.emit('fakeScored', { data: playerKeys[e.keyCode] });
         }
     });
+    // Map up arrow key to connection event
+    $(window).on('keyup', function(e) {
+        if (e.keyCode == 38) {
+            _this.socket.emit('fakeJoin');
+        }
+    });
 }
 
 // Housekeeping
