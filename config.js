@@ -1,17 +1,17 @@
 module.exports = {
     development: {
-        clientUrl: 'http://127.0.0.1',
+        clientUrl: 'localhost',
         clientPort: 8000,
         wsPort: 8080,
         cardReaderPort: 4000,
         database: {
             client: 'mysql',
             connection: {
-                host: '127.0.0.1',
-                port: 8889,
+                host: 'localhost',
+                port: 3306,
                 user: 'root',
-                password: 'root',
-                database: 'pong'
+                password: '!abc123!',
+                database: 'ping_pong',
             },
             migrations: {
                 directory: __dirname + '/migrations',
@@ -48,8 +48,8 @@ module.exports = {
         serverSwitchThreshold: 20, // When both players have reached this threshold, the server switches every time
         maxScore: 21,
         mustWinBy: 2,
-        minPlayers: 2, //temp. should be 2
-        maxPlayers: 2, // will make 4 in future
+        minPlayers: 2,
+        maxPlayers: 2,
         winningViewDuration: 12000, // The duration to show the winning view for before returning to the leaderboard
         feelers: {
             pingInterval: 5000,

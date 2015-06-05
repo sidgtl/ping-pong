@@ -30,7 +30,6 @@ Game = module.exports = bookshelf.Model.extend({
     
     
     start: function() {
-        console.log("game is actually being started now");
         this.start = moment();
         this.set('start', this.start.format(datetimeFormat));
     },
