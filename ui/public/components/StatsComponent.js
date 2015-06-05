@@ -231,7 +231,7 @@ var StatsComponent = module.exports = React.createClass({
 
         if(this.state.fullView) {
             
-            logo = <img className="stats__logo" src='img/logos/logo.png' alt='Ping Pong' key='logo' />;
+            logo = <img className="stats__logo" src='img/logos/logo.svg' alt='Ping Pong' key='logo' />;
             
             leaderboard = (
                 <div className="stats__component" key="leaderboard">
