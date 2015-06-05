@@ -30,7 +30,7 @@ var PlayerComponent = module.exports = React.createClass({
 
 
     componentDidMount: function() {
-        /*
+
         var
             _this = this,
             positionNS = 'player' + _this.props.positionId;
@@ -73,7 +73,7 @@ var PlayerComponent = module.exports = React.createClass({
         node.socket.on('game.reset', function () {
             setTimeout(_this.reset, 1500);
         });
-        */
+
     },
 
 

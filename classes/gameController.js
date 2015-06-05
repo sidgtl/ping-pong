@@ -32,6 +32,7 @@ function gameController() {
 
     this.feelers.forEach(function(feeler, i) {
         feeler.on('score', function() {
+            console.log("game controller found a score event. changing game scored data. (player ID?) i = " + i);
             game.scored({ data: i + 1 });
         });
         feeler.on('removePoint', function() {
@@ -382,11 +383,12 @@ gameController.prototype.start = function(startingServe) {
  * Register a new point scored
  */
 gameController.prototype.scored = function(event) {
-
+    console.log("scored in game controller");
     var player = event.data;
     var playerID = player - 1;
 
     if(!game.inProgress) {
+        console.log("game not started");
         // Game not started, try to start...
         if(!game.start(playerID)) {
             // Could not start, wait...
@@ -402,6 +404,7 @@ gameController.prototype.scored = function(event) {
         score: this.score.slice()
     });
 
+    console.log("socket imitting game score: " + game.score);
     io.sockets.emit('game.score', {
         player: playerID,
         score: game.score[playerID],
