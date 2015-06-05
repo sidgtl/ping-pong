@@ -289,7 +289,7 @@ gameController.prototype.feelerPressed = function(data) {
  * The game is ready – two players have joined, but not yet started
  */
 gameController.prototype.ready = function() {
-
+    console.log("game is ready");
     gameModel = new Game();
 
     gameModel.set({

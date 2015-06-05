@@ -72,26 +72,18 @@ io.sockets.on('connection', function(client) {
     game.clientJoined();
     cardReader.connectionStatus();
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing
+    client.on('fakeJoin', function() { // fake rfid
 
-
-    // fake client joining for testing
-    if(this.i) {
-        this.i++;
-    }
-    else {
-        this.i = 1;
-    }
-
-    // for now, only add up to 2 players on page loads
-    if(this.i <= 2) {
+        if(this.i)
+            i++;
+        else
+            this.i = 1;
+        console.log("adding player jawn: " + this.i);
         game.addPlayer(this.i, {
             attr: 'rfid',
             value: this.i
         });
-    }
-
-
-
+    });
     console.log("connection");
 });
 
