@@ -36,7 +36,7 @@ io = io.listen(config.wsPort);
 console.log(chalk.green('Websocket Server: Listening on port ' + config.wsPort));
 
 io.configure(function() {
-    io.set('log level', 2);
+    io.set('log level', 3);
 });
 
 app.get('/', function(req, res) {
@@ -60,6 +60,15 @@ app.get('/leaderboard', function(req, res) {
         });
 });
 
+app.get('/standings', function(req, res) {
+    res.render('standings.jade', {
+        title: 'Ping Pong',
+        metaDesc: 'Ping Pong',
+        JSVersions: require('./versions/js'),
+        CSSVersions: require('./versions/css')
+    });
+})
+
 app.listen(config.clientPort);
 console.log(chalk.green('Web Server: Listening on port ' + config.clientPort));
 
@@ -75,7 +84,7 @@ io.sockets.on('connection', function(client) {
     client.on('fakeJoin', function() { // fake rfid
 
         if(this.i)
-            i++;
+            this.i++;
         else
             this.i = 1;
         console.log("adding player jawn: " + this.i);
