@@ -76,7 +76,7 @@ var LeaderboardComponent = module.exports = React.createClass({
             return (
                 <li className='leaderboard__player' key={player.id}>
                     <div className='leaderboard__player__inner'>
-                        <div className='leaderboard__player__name'>{i + 1}. {player.name}</div>
+                        <div className='leaderboard__player__name'>{i + 1}. {player.name} - <span className='elo'>{player.elo} points</span></div>
                     </div>
                 </li>
             );

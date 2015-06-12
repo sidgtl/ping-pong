@@ -64,17 +64,21 @@ var GameComponent = module.exports = React.createClass({
         sounds = new Howl(soundSprite);
         
         node.socket.on('game.end', _this.end);
-        node.socket.on('game.score', _this.score);
+        //node.socket.on('game.score', _this.score);
         node.socket.on('game.reset', _this.reset);
         node.socket.on('game.gamePoint', _this.gamePoint);
-        
+
+        node.socket.on('game.score', function(data) {
+            _this.score(data);
+        });
+
         node.socket.on('game.switchServer', function(data) {
             _this.switchServer(data.player);
         });
         
         node.socket.on('feelers.disconnect', _this.tableDisconnected);
         node.socket.on('feelers.connect', _this.tableConnected);
-        node.socket.on('core.batteryLow', _this.tableBatteryLow);
+        //node.socket.on('core.batteryLow', _this.tableBatteryLow);
         
         node.socket.on('cardReader.connect', _this.cardReaderConnected);
         node.socket.on('cardReader.disconnect', _this.cardReaderDisconnected);
@@ -92,7 +96,7 @@ var GameComponent = module.exports = React.createClass({
 
 
     switchServer: function(player) {
-        
+        console.log("switching server");
         var
             _this = this,
             playerSound = '';
@@ -116,12 +120,14 @@ var GameComponent = module.exports = React.createClass({
     
     
     score: function(data) {
-
+        console.log("updating score and setting state");
         var _this = this;
 
         this.setState({
             score: data.gameScore
         });
+
+        console.log("gameScore: " + data.gameScore);
 
         // This is really counterintuitive, and far from a permanent
         // solution. This small delay allows us to cancel the score
@@ -153,11 +159,11 @@ var GameComponent = module.exports = React.createClass({
         this.queueSound('game-point-' + playerSound.toLowerCase());
         
     },
-    
-    
-    
+
+
+    // temp comment out til sounds are working
     announceScore: function() {
-    
+/*
         var announcement = this.state.score;
         
         if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
@@ -165,13 +171,15 @@ var GameComponent = module.exports = React.createClass({
             // Announce the server's score first
             if(this.state.server == 1) {
                 announcement.reverse();
+
+
             }
-            
+
             this.queueSound('' + announcement[0], -300);
             this.queueSound('' + announcement[1]);
-            
+
         }
-    
+*/
     },
     
     
@@ -265,7 +273,7 @@ var GameComponent = module.exports = React.createClass({
         }
         
         soundsPlaying = true;
-        
+
         play = function() {
             
             var
@@ -290,7 +298,7 @@ var GameComponent = module.exports = React.createClass({
 
         }
 
-        play();
+        //play();
 
     },
     
@@ -303,7 +311,7 @@ var GameComponent = module.exports = React.createClass({
 
 
     reset: function() {
-
+        console.log("reset");
         setTimeout(function() {
             for(var prop in playerProps) {
                 player0.unset(prop);

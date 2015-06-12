@@ -44,5 +44,5 @@ html(lang='en')
     
     body
         #game.container
-        audio#audio-stream: source
+        //- audio#audio-stream: source
         script#nodejs_loader(src='#{app.locals.config.clientUrl}:#{app.locals.config.wsPort}/socket.io/socket.io.js')

@@ -31,14 +31,19 @@ var GameComponent = module.exports = React.createClass({
 
         var _this = this;
         
-        node.socket.on('core.batteryLow', _this.batteryLow);
-        node.socket.on('core.online', _this.batteryReplenished);
+        //node.socket.on('core.batteryLow', _this.batteryLow);
+        //node.socket.on('core.online', _this.batteryReplenished);
+        if(node.socket == null) {
+            console.log("null... so attempting to start again");
+            node.start();
+        }
+
         node.socket.on('game.cardReadError', _this.cardReadError);
-        
+
         node.socket.on('game.message', function(data) {
             _this.info(data.message);
         });
-        
+
         node.socket.on('game.playerNotFound', function(data) {
             _this.playerNotFound(data);
         });

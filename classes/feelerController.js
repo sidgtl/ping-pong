@@ -41,6 +41,7 @@ FeelerController.prototype.counter = function() {
         this.scoreRegisteredWithinThreshold = false;
         
         return clearTimeout(_this.timer);
+        console.log("removing point.")
         
     }
     
@@ -52,5 +53,5 @@ FeelerController.prototype.counter = function() {
     this.timer = setTimeout(function() {
         _this.scoreRegisteredWithinThreshold = false;
     }, config.global.feelers.undoThreshold);
-    
+    console.log("adding point inside feeler controller counter. emitting score");
 };
