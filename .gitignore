@@ -1,6 +1,4 @@
 .DS_Store
 node_modules
 .idea/
-ui/public/build/
 config.js
-versions/
