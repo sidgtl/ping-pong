@@ -36,7 +36,7 @@ io = io.listen(config.wsPort);
 console.log(chalk.green('Websocket Server: Listening on port ' + config.wsPort));
 
 io.configure(function() {
-    io.set('log level', 2);
+    io.set('log level', 3);
 });
 
 app.get('/', function(req, res) {
@@ -75,7 +75,7 @@ io.sockets.on('connection', function(client) {
     client.on('fakeJoin', function() { // fake rfid
 
         if(this.i)
-            i++;
+            this.i++;
         else
             this.i = 1;
         console.log("adding player jawn: " + this.i);

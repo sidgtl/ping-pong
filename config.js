@@ -54,7 +54,7 @@ module.exports = {
         feelers: {
             pingInterval: 5000,
             pingThreshold: 250,
-            undoThreshold: 1500
+            undoThreshold: 0 // was 1500, disabled for now.
         },
         cardReader: {
             pingInterval: 30000,
