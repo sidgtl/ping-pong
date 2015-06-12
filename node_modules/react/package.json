@@ -1,0 +1,66 @@
+{
+  "name": "react",
+  "description": "React is a JavaScript library for building user interfaces.",
+  "version": "0.11.2",
+  "keywords": [
+    "react"
+  ],
+  "homepage": "https://github.com/facebook/react/tree/master/npm-react",
+  "bugs": {
+    "url": "https://github.com/facebook/react/issues?labels=react-core"
+  },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "files": [
+    "README.md",
+    "addons.js",
+    "react.js",
+    "dist/",
+    "lib/"
+  ],
+  "main": "react.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "envify": "^2.0.0"
+  },
+  "browserify": {
+    "transform": [
+      "envify"
+    ]
+  },
+  "_id": "react@0.11.2",
+  "_shasum": "eaeb787e9b1e266a3540c07c06f4ea80fe1e3766",
+  "_resolved": "https://registry.npmjs.org/react/-/react-0.11.2.tgz",
+  "_from": "react@>=0.11.1 <0.12.0",
+  "scripts": {},
+  "_npmVersion": "1.4.23",
+  "_npmUser": {
+    "name": "zpao",
+    "email": "paul@oshannessy.com"
+  },
+  "maintainers": [
+    {
+      "name": "zpao",
+      "email": "paul@oshannessy.com"
+    },
+    {
+      "name": "jeffmo",
+      "email": "jeff@anafx.com"
+    }
+  ],
+  "dist": {
+    "shasum": "eaeb787e9b1e266a3540c07c06f4ea80fe1e3766",
+    "tarball": "http://registry.npmjs.org/react/-/react-0.11.2.tgz"
+  },
+  "directories": {}
+}

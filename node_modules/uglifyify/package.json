@@ -1,0 +1,62 @@
+{
+  "name": "uglifyify",
+  "version": "2.6.0",
+  "description": "A browserify transform which minifies your code using UglifyJS2",
+  "main": "index.js",
+  "dependencies": {
+    "convert-source-map": "~0.2.3",
+    "extend": "^1.2.1",
+    "minimatch": "^0.3.0",
+    "through": "~2.3.4",
+    "uglify-js": "2.x.x"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hughsk/uglifyify.git"
+  },
+  "keywords": [
+    "uglify",
+    "minify",
+    "compress",
+    "compile",
+    "browserify",
+    "transform",
+    "stream"
+  ],
+  "author": {
+    "name": "Hugh Kennedy",
+    "email": "hughskennedy@gmail.com",
+    "url": "http://hughskennedy.com/"
+  },
+  "license": "MIT",
+  "gitHead": "df098ed1d915c3de8c9a6ebd45d8e1762c07985c",
+  "bugs": {
+    "url": "https://github.com/hughsk/uglifyify/issues"
+  },
+  "homepage": "https://github.com/hughsk/uglifyify",
+  "_id": "uglifyify@2.6.0",
+  "_shasum": "f978ae338abbe14f32ed030af7a78c6d2a861591",
+  "_from": "uglifyify@>=2.5.0 <3.0.0",
+  "_npmVersion": "2.1.3",
+  "_nodeVersion": "0.10.28",
+  "_npmUser": {
+    "name": "hughsk",
+    "email": "hughskennedy@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "hughsk",
+      "email": "hughskennedy@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "f978ae338abbe14f32ed030af7a78c6d2a861591",
+    "tarball": "http://registry.npmjs.org/uglifyify/-/uglifyify-2.6.0.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/uglifyify/-/uglifyify-2.6.0.tgz"
+}

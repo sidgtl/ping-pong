@@ -1,0 +1,31 @@
+var request = require('request');
+var streamBuffers = require("stream-buffers");
+/**
+ * Escape special characters in the given string of html.
+ *
+ * @param  {String} languageLocale = the target locale language (example : en)
+ * @param  {String} word = the word to translate to speech
+ * @param  {function({'audio' : String, 'message' : String })} callback = function invoked on translate completed with two 
+ * arguments : audio data as base64 and success true for translated ok and false otherwise
+ */
+module.exports = {
+  translate: function(languageLocale, word, callback) {
+      var url = "http://translate.google.com/translate_tts?tl=" + languageLocale + "&q=" + word;
+      
+      var myWritableStreamBuffer = new streamBuffers.WritableStreamBuffer({
+          initialSize: (100 * 1024),      // start as 100 kilobytes.
+          incrementAmount: (10 * 1024)    // grow by 10 kilobytes each time buffer overflows.
+      });
+
+      var r = request(url, function (error, response, buffer) {
+        if (!error && response.statusCode == 200) {
+            var data = myWritableStreamBuffer.getContents().toString('base64');
+            var result = {'audio' : data, 'success' : true };
+            callback(result);
+         } else {
+           var result = {'success' : false, 'error' : error, 'responseCode' : response.statusCode };
+           callback(result);
+         }
+      }).pipe(myWritableStreamBuffer);
+  }
+};
