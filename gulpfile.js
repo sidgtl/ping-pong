@@ -21,6 +21,7 @@ var
     less = require('gulp-less'),
     autoprefixer = require('gulp-autoprefixer'),
     csso = require('gulp-csso'),
+    updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav'),
     paths = {};
 
 
@@ -173,8 +174,6 @@ gulp.task('sounds', function(cb) {
 
     ], function() {
 
-        var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', cb);
-
         if(downloads.length > 0) {
             return es.merge.apply(undefined, downloads).on('end', function() {
                 updateSprite();
@@ -193,6 +192,10 @@ gulp.task('sounds', function(cb) {
     }
 
 });
+
+
+
+gulp.task('updateSoundSprite', updateSprite);
 
 
 
