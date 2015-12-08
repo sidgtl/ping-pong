@@ -4,9 +4,9 @@
 
 
 exports.up = function(knex, Promise) {
-  
+
     return knex.schema
-    
+
         .createTable('players', function(table) {
             table.increments('id').primary();
             table.string('rfid');
@@ -14,11 +14,12 @@ exports.up = function(knex, Promise) {
             table.enu('gender', ['male', 'female']);
             table.string('uri');
             table.integer('elo').defaultTo(0);
+            table.integer('previous_elo').defaultTo(0);
             table.string('image');
             table.integer('play_count').defaultTo(0);
             table.timestamps();
         })
-        
+
         .createTable('games', function(table) {
             table.increments('id').primary();
             table.integer('player0_id').unsigned().references('players.id');
@@ -31,7 +32,7 @@ exports.up = function(knex, Promise) {
             table.integer('score_delta');
             table.integer('winner_id').unsigned().references('players.id');
         });
-  
+
 };
 
 
