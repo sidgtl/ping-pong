@@ -152,7 +152,8 @@ gameController.prototype.addPlayer = function(playerID, custom) {
         elo.addPlayer(player, position);
         
         if(players.length === settings.minPlayers) {
-            game.ready();
+          console.log("game ready!\n");
+          game.ready();
         }
         
         // Notify the client a player has joined
@@ -279,8 +280,9 @@ gameController.prototype.end = function(complete) {
  * i.e. `score` or `removePoint`.
  */
 gameController.prototype.feelerPressed = function(data) {
-    var positionId = data.data - 1;
-    game.feelers[positionId].emit('press', positionId);
+    var positionId = data - 1;
+    console.log('press event player ' + data);
+    this.feelers[positionId].emit('score');
 };
 
 
