@@ -4,7 +4,7 @@ var
     chalk = require('chalk'),
     jade = require('jade'),
     serveStatic = require('serve-static'),
-    environment = process.env.NODE_ENV = process.env.NODE_ENV || 'production',
+    environment = process.env.NODE_ENV = process.env.NODE_ENV || 'development',
     app = require('./app.js'),
     cardReader = require('./lib/cardReader'),
     leaderboard = require('./lib/leaderboard');
@@ -22,8 +22,8 @@ app.locals.settings = settings;
 _ = require('underscore');
 io = require('socket.io');
 moment = require('moment');
-spark = require('sparknode');
-core = new spark.Core(settings.sparkCore);
+//spark = require('sparknode');
+//core = new spark.Core(settings.sparkCore);
 
 gameController = require('./classes/gameController');
 
@@ -72,21 +72,31 @@ io.sockets.on('connection', function(client) {
     game.clientJoined();
     cardReader.connectionStatus();
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing
+    
+    // test
+    //game.addPlayerByRfid(123);
+    //game.addPlayerByRfid(124);
+    //game.feelerPressed;
 });
 
-core.on('scored', game.feelerPressed);
-core.on('ping', game.feelersPingReceived);    
-core.on('batteryLow', game.batteryLow);
+//core.on('scored', game.feelerPressed);
+//core.on('ping', game.feelersPingReceived);    
+//core.on('batteryLow', game.batteryLow);
 
-core.on('online', function() {
-    game.feelersOnline();
-    game.feelerStatus();
-    game.feelersPingReceived();
-});
+//core.on('online', function() {
+//    game.feelersOnline();
+//    game.feelerStatus();
+//    game.feelersPingReceived();
+//});
 
 cardReader.on('read', function(data) {
     console.log('New read', data);
     game.addPlayerByRfid(data.rfid);
+});
+
+cardReader.on('press', function(data) {
+    console.log('Player ' + data.player + ' press');
+    game.feelerPressed(data.player);
 });
 
 cardReader.on('err', game.cardReadError);
