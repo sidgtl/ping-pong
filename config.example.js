@@ -1,17 +1,17 @@
 module.exports = {
     development: {
-        clientUrl: undefined,
-        clientPort: undefined,
-        wsPort: undefined,
-        cardReaderPort: undefined,
+        clientUrl: 'http://localhost',
+        clientPort: 82,
+        wsPort: 2000,
+        cardReaderPort: 123,
         database: {
             client: 'mysql',
             connection: {
-                host: undefined,
-                port: undefined,
-                user: undefined,
-                password: undefined,
-                database: undefined,
+                host: 'localhost',
+                port: 3306,
+                user: 'root',
+                password: 'root',
+                database: 'ballgame',
             },
             migrations: {
                 directory: __dirname + '/migrations',
@@ -20,24 +20,24 @@ module.exports = {
         }
     },
     production: {
-        clientUrl: undefined,
-        clientPort: undefined,
-        wsPort: undefined,
+        clientUrl: 'localhost',
+        clientPort: 83,
+        wsPort: 84,
         database: {
             client: 'mysql',
             connection: {
-                host: undefined,
-                port: undefined,
-                user: undefined,
-                password: undefined,
-                database: undefined,
+                host: 'localhost',
+                port: 3306,
+                user: 'root',
+                password: 'root',
+                database: 'ballgame',
             },
             migrations: {
                 directory: __dirname + '/migrations',
                 tableName: 'migrations'
             }
         },
-        cardReaderPort: undefined
+        cardReaderPort: 123
     },
     global: {
         sparkCore: {
