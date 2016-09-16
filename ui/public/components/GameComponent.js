@@ -12,6 +12,7 @@ var
     soundSprite = require('../build/sprite'),
     config = window.config,
     node = require('../js/node'),
+    AdminComponent = require('./AdminComponent'),
     PlayerComponent = require('./PlayerComponent'),
     StatusComponent = require('./StatusComponent'),
     StatusIndicatorComponent = require('./StatusIndicatorComponent'),
@@ -320,6 +321,9 @@ var GameComponent = module.exports = React.createClass({
     render: function() {
         return (
             <div>
+                <div className='admin_container'>
+                    <AdminComponent active='0' />
+                </div>
                 <div className='player_container'>
                     <PlayerComponent positionId='0' player={player0} server={this.state.server} winner={this.state.winner} />
                     <PlayerComponent positionId='1' player={player1} server={this.state.server} winner={this.state.winner} />
