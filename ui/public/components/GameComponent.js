@@ -321,9 +321,7 @@ var GameComponent = module.exports = React.createClass({
     render: function() {
         return (
             <div>
-                <div className='admin_container'>
-                    <AdminComponent active='0' />
-                </div>
+                <AdminComponent active='0' />
                 <div className='player_container'>
                     <PlayerComponent positionId='0' player={player0} server={this.state.server} winner={this.state.winner} />
                     <PlayerComponent positionId='1' player={player1} server={this.state.server} winner={this.state.winner} />

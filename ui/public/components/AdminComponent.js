@@ -12,7 +12,7 @@ var AdminComponent = module.exports = React.createClass({
 
 	getInitialState: function() {
 		return {
-			active: true
+			active: false
 		};
 	},
 
@@ -38,14 +38,16 @@ var AdminComponent = module.exports = React.createClass({
 	},
 
 	render: function() {
-		var modalClass = 'modal';
+		var containerClass = 'admin_container';
 
 		if (this.state.active) {
-			modalClass += ' active';
+			containerClass += ' active';
 		}
 
 		return (
-			<div className='{modalClass}'>Test</div>
+			<div className={containerClass}>
+				<div className='modal'>Test</div>
+			</div>
 		);
 	}
 });
