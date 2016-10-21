@@ -47,10 +47,10 @@ module.exports = {
         serverSwitchLimit: 2, // How many points before service switches
         serverSwitchThreshold: 10, // When both players have reached this threshold, the server switches every time
         maxScore: 11,
-        mustWinBy: 1,
+        mustWinBy: 2,
         minPlayers: 2,
-        maxPlayers: 4,
-        winningViewDuration: 12000, // The duration to show the winning view for before returning to the leaderboard
+        maxPlayers: 2,
+        winningViewDuration: 6000, // The duration to show the winning view for before returning to the leaderboard
         feelers: {
             pingInterval: 3000,
             pingThreshold: 250,
