@@ -7,7 +7,7 @@ module.exports = {
         database: {
             client: 'mysql',
             connection: {
-                host: 'localhost',
+                host: '0.0.0.0',
                 port: 3306,
                 user: 'root',
                 password: 'secret',
@@ -26,7 +26,7 @@ module.exports = {
         database: {
             client: 'mysql',
             connection: {
-                host: 'localhost',
+                host: '0.0.0.0',
                 port: 3306,
                 user: 'root',
                 password: 'root',
@@ -44,20 +44,20 @@ module.exports = {
             accessToken: undefined,
             id: undefined
         },
-        serverSwitchLimit: 5, // How many points before service switches
-        serverSwitchThreshold: 20, // When both players have reached this threshold, the server switches every time
-        maxScore: 21,
+        serverSwitchLimit: 2, // How many points before service switches
+        serverSwitchThreshold: 10, // When both players have reached this threshold, the server switches every time
+        maxScore: 11,
         mustWinBy: 2,
         minPlayers: 2,
         maxPlayers: 2,
-        winningViewDuration: 12000, // The duration to show the winning view for before returning to the leaderboard
+        winningViewDuration: 6000, // The duration to show the winning view for before returning to the leaderboard
         feelers: {
-            pingInterval: 5000,
+            pingInterval: 3000,
             pingThreshold: 250,
             undoThreshold: 1500
         },
         cardReader: {
-            pingInterval: 30000,
+            pingInterval: 3000,
             pingThreshold: 250
         }
     }
