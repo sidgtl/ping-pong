@@ -38,7 +38,7 @@ var AdminComponent = module.exports = React.createClass({
 	},
 
 	render: function() {
-		var containerClass = 'admin_container';
+		var containerClass = 'admin-container';
 
 		if (this.state.active) {
 			containerClass += ' active';
@@ -46,7 +46,18 @@ var AdminComponent = module.exports = React.createClass({
 
 		return (
 			<div className={containerClass}>
-				<div className='modal'>Test</div>
+				<article className='modal'>
+					<header className='modal-header'>
+						<h2>Players</h2>
+						<button type="submit" id="admin-player-add" className='modal-header-add'></button>
+					</header>
+					<section className='modal-section'>
+						<header className='modal-section-header'>List</header>
+						<ul className='modal-section-list'>
+							<li></li>
+						</ul>
+					</section>
+				</article>
 			</div>
 		);
 	}
