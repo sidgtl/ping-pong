@@ -500,7 +500,7 @@ body {
     animation: blink infinite alternate 300ms 0 ease-in-out;
 }
 
-.admin_container {
+.admin-container {
     display: none;
     position: fixed;
     top: 0;
@@ -515,6 +515,7 @@ body {
     }
 
     .modal {
+        overflow: hidden;
         position: fixed;
         top: 50%;
         left: 50%;
@@ -524,8 +525,56 @@ body {
         width: 600px;
         height: 400px;
         z-index: 11;
-        background-color: #f1c40f;
-        line-height: 400px;
-        text-align: center;
+        background-color: @colorWhite;
+
+        .modal-header {
+            display: block;
+            position: relative;
+            height: 40px;
+            background-color: @colorLightBlue;
+
+            h2 {
+                padding: 10px 0 0 10px;
+                font-size: 20px;
+                font-weight: 700;
+            }
+        }
+
+        .modal-header-add {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            margin: 0;
+            border: 0;
+            padding: 0;
+            border-radius: 5px;
+            width: 32px;
+            height: 32px;
+            background-color: @colorRed;
+            color: @colorWhite;
+            font-size: 38px;
+            line-height: 32px;
+            cursor: pointer;
+            &:before {
+                content:'\002B';
+            }
+            &:hover {
+                background-color: @colorBlue;
+            }
+        }
+
+        .modal-section {
+            display: block;
+            overflow: auto;
+            height: 360px;
+        }
+
+        .modal-section-header {
+
+        }
+
+        .modal-section-list {
+
+        }
     }
 }
