@@ -140,8 +140,8 @@ gulp.task('sounds', function(cb) {
     
         function(cb) {
             Player.fetchAll().then(function(players) {
-                async.each(players, function(player, cb) {
-                    fetchAnnouncements(player.get('name'), function(res) {
+                async.each(players.toJSON(), function(player, cb) {
+                    fetchAnnouncements(player.name, function(res) {
                         if(res.writable) {
                             downloads.push(res);
                         }
@@ -201,7 +201,7 @@ function getTTS(phrase, language, cb) {
     language = language || 'en-gb';
 
     var
-        requestURL = 'http://translate.google.com/translate_tts?q=' + phrase + '&tl=' + language,
+        requestURL = 'http://translate.google.com/translate_tts?ie=UTF-8&q=' + phrase + '&tl=' + language + '&client=' + language,
         fileName = slug(phrase).toLowerCase() + '.mp3',
         filePath = path.join('./ui/public/sounds/', fileName),
         res = true;

@@ -12,7 +12,8 @@ var AdminComponent = module.exports = React.createClass({
 
 	getInitialState: function() {
 		return {
-			active: false
+			active: false,
+			players: undefined
 		};
 	},
 
@@ -20,6 +21,10 @@ var AdminComponent = module.exports = React.createClass({
 		var _this = this;
 
 		window.addEventListener('keypress', this.handleKeypress);
+
+		node.socket.on('admin.allPlayers', function(data) {
+			_this.allPlayers(data.limit);
+		});
 	},
 
 	handleKeypress: function(e) {
@@ -34,6 +39,12 @@ var AdminComponent = module.exports = React.createClass({
 	toggle: function() {
 		this.setState({
 			active: this.state.active ? 0 : 1
+		});
+	},
+
+	allPlayers: function(players) {
+		this.setState({
+			players: players
 		});
 	},
 
