@@ -29,8 +29,8 @@ module.exports = {
                 host: '0.0.0.0',
                 port: 3306,
                 user: 'root',
-                password: 'root',
-                database: 'ballgame',
+                password: 'secret',
+                database: 'pingpong',
             },
             migrations: {
                 directory: __dirname + '/migrations',
