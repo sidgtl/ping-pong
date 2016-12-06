@@ -219,8 +219,13 @@ function getTTS(phrase, language, cb) {
         if(!exists) {
 			gutil.log("does not exist, building res from url="+requestURL);
             res = request(requestURL);
-            res.on('response', function() {
-                res.pipe(fs.createWriteStream(filePath));
+            res.on('response', function(response) {
+				gutil.log("downloaded "+requestURL+", status code=" + response.statusCode + " content-type: " + response.headers['content-type'] + " length:" + response.headers['content-length'])
+				if(response.headers['content-type'] == "audio/mpeg" && response.headers['content-length'] > 0) {
+	            	response.pipe(fs.createWriteStream(filePath));
+				} else {
+					gutil.log("problem, see above, not saving it");
+				}
             });
         }
         cb(res);
