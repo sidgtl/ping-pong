@@ -53,6 +53,7 @@ gulp.task('main.js', function() {
     bundle.add(paths.js + '/third_party/typekit.js', { noparse: true });
     
     // Add the main.js file
+	gutil.log("adding to bundle: "+paths.js + '/main.js');
     bundle.add(paths.js + '/main.js');
 
     bundle.transform('reactify');
@@ -60,7 +61,9 @@ gulp.task('main.js', function() {
     watch.on('update', rebundle);
         
     function rebundle() {
+		gutil.log("rebundling...");
         cleanJS(function() {
+			gutil.log("after deleting, now watching for changes..");
             return watch.bundle()
                 .on('error', function(e) {
                     gutil.beep();
@@ -77,6 +80,7 @@ gulp.task('main.js', function() {
                 .pipe(gulp.dest(paths.versions));
         });
     }
+
     
     return rebundle();
     
@@ -163,20 +167,20 @@ gulp.task('sounds', function(cb) {
                 i ++;
                 getTTS(i, 'en-gb', function(res) {
                     if(res.writable) {
+						gutil.log("pushing tts of " + i + " to download queue");
                         downloads.push(res);
                     }
                     cb();
                 });
             }, cb);
-            
         }
     
     ], function() {
-        
         var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', cb);
         
         if(downloads.length > 0) {
             return es.merge.apply(undefined, downloads).on('end', function() {
+				gutil.log("updating sprite...");
                 updateSprite();
             });
         }
@@ -208,6 +212,7 @@ function getTTS(phrase, language, cb) {
 
     fs.exists(filePath, function(exists) {
         if(!exists) {
+			gutil.log("does not exist, building res from url="+requestURL);
             res = request(requestURL);
             res.on('response', function() {
                 res.pipe(fs.createWriteStream(filePath));
@@ -217,7 +222,5 @@ function getTTS(phrase, language, cb) {
     });
 
 }
-
-
 
 gulp.task('all', ['css', 'main.js']);
