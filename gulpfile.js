@@ -210,7 +210,7 @@ function getTTS(phrase, language, cb) {
     language = language || 'en-gb';
 
     var
-        requestURL = 'http://translate.google.com/translate_tts?q=' + phrase + '&tl=' + language,
+		requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
         fileName = slug(phrase).toLowerCase() + '.mp3',
         filePath = path.join('./ui/public/sounds/', fileName),
         res = true;
