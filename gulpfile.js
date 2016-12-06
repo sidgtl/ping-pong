@@ -170,7 +170,7 @@ gulp.task('sounds', function(cb) {
 
             async.whilst(incomplete, function(cb) {
                 i ++;
-                getTTS(i, 'en-gb', function(res) {
+                getTTS(i, 'en-US', function(res) {
                     if(res.writable) {
 						gutil.log("pushing tts of " + i + " to download queue");
                         downloads.push(res);
@@ -197,7 +197,7 @@ gulp.task('sounds', function(cb) {
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {
             announcement = announcement(player);
-            getTTS(announcement, 'en-gb', cb);
+            getTTS(announcement, 'en-US', cb);
         }, cb);
     }
     
