@@ -145,14 +145,11 @@ gulp.task('sounds', function(cb) {
         function(cb) {
             Player.fetchAll().then(function(players) {
 		players2 = [];
-		// putting the models to an array, async.each cannot deal with the collection
-		players.forEach(function (model) {
-			players2.push(model);
-		});
-		async.each(players2, function(player, cb) {
-			fetchAnnouncements(player.get('name'), function(res) {
+		async.each(players.toJSON(), function(player, cb) {
+                    fetchAnnouncements(player.name, function(res) {
+
 				if(res.writable) {
-					gutil.log("pushing announcements for " + player.get('name') + " to download queue..");
+					gutil.log("pushing announcements for " + player.name + " to download queue..");
 					downloads.push(res);
 				}
 				cb();
