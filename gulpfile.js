@@ -53,6 +53,7 @@ gulp.task('main.js', function() {
     bundle.add(paths.js + '/third_party/typekit.js', { noparse: true });
     
     // Add the main.js file
+	gutil.log("adding to bundle: "+paths.js + '/main.js');
     bundle.add(paths.js + '/main.js');
 
     bundle.transform('reactify');
@@ -60,7 +61,9 @@ gulp.task('main.js', function() {
     watch.on('update', rebundle);
         
     function rebundle() {
+		gutil.log("rebundling...");
         cleanJS(function() {
+			gutil.log("after deleting, now watching for changes..");
             return watch.bundle()
                 .on('error', function(e) {
                     gutil.beep();
@@ -77,6 +80,7 @@ gulp.task('main.js', function() {
                 .pipe(gulp.dest(paths.versions));
         });
     }
+
     
     return rebundle();
     
@@ -140,19 +144,24 @@ gulp.task('sounds', function(cb) {
     
         function(cb) {
             Player.fetchAll().then(function(players) {
-                async.each(players.toJSON(), function(player, cb) {
-                    fetchAnnouncements(player.name, function(res) {
-                        if(res.writable) {
-                            downloads.push(res);
-                        }
-                        cb();
-                    });
-                }, cb);
+		players2 = [];
+		// putting the models to an array, async.each cannot deal with the collection
+		players.forEach(function (model) {
+			players2.push(model);
+		});
+		async.each(players2, function(player, cb) {
+			fetchAnnouncements(player.get('name'), function(res) {
+				if(res.writable) {
+					gutil.log("pushing announcements for " + player.get('name') + " to download queue..");
+					downloads.push(res);
+				}
+				cb();
+			});
+	        }, cb);
             });
         },
         
         function(cb) {
-            
             var
                 i = 0,
                 incomplete = function() {
@@ -161,22 +170,22 @@ gulp.task('sounds', function(cb) {
 
             async.whilst(incomplete, function(cb) {
                 i ++;
-                getTTS(i, 'en-gb', function(res) {
+                getTTS(i, 'en-US', function(res) {
                     if(res.writable) {
+						gutil.log("pushing tts of " + i + " to download queue");
                         downloads.push(res);
                     }
                     cb();
                 });
             }, cb);
-            
         }
     
     ], function() {
-        
         var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', cb);
         
         if(downloads.length > 0) {
             return es.merge.apply(undefined, downloads).on('end', function() {
+				gutil.log("updating sprite...");
                 updateSprite();
             });
         }
@@ -188,7 +197,7 @@ gulp.task('sounds', function(cb) {
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {
             announcement = announcement(player);
-            getTTS(announcement, 'en-gb', cb);
+            getTTS(announcement, 'en-US', cb);
         }, cb);
     }
     
@@ -201,23 +210,27 @@ function getTTS(phrase, language, cb) {
     language = language || 'en-gb';
 
     var
-        requestURL = 'http://translate.google.com/translate_tts?ie=UTF-8&q=' + phrase + '&tl=' + language + '&client=' + language,
+	requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
         fileName = slug(phrase).toLowerCase() + '.mp3',
         filePath = path.join('./ui/public/sounds/', fileName),
         res = true;
 
     fs.exists(filePath, function(exists) {
         if(!exists) {
+			gutil.log("does not exist, building res from url="+requestURL);
             res = request(requestURL);
-            res.on('response', function() {
-                res.pipe(fs.createWriteStream(filePath));
+            res.on('response', function(response) {
+				gutil.log("downloaded "+requestURL+", status code=" + response.statusCode + " content-type: " + response.headers['content-type'] + " length:" + response.headers['content-length'])
+				if(response.headers['content-type'] == "audio/mpeg" && response.headers['content-length'] > 0) {
+	            	response.pipe(fs.createWriteStream(filePath));
+				} else {
+					gutil.log("problem, see above, not saving it");
+				}
             });
         }
         cb(res);
     });
 
 }
-
-
 
 gulp.task('all', ['css', 'main.js']);
