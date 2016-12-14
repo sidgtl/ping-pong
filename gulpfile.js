@@ -166,12 +166,12 @@ gulp.task('sounds', function(cb) {
                 };
 
             async.whilst(incomplete, function(cb) {
-                i ++;
                 getTTS(i, 'en-US', function(res) {
                     if(res.writable) {
 						gutil.log("pushing tts of " + i + " to download queue");
                         downloads.push(res);
                     }
+                	i ++;
                     cb();
                 });
             }, cb);
