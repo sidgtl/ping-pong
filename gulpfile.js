@@ -178,7 +178,7 @@ gulp.task('sounds', function(cb) {
         }
     
     ], function() {
-        var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', cb);
+        var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3', cb);
         
         if(downloads.length > 0) {
             return es.merge.apply(undefined, downloads).on('end', function() {
