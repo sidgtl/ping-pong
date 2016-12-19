@@ -45,7 +45,7 @@ function watchPlayers(loopCb, cbOnUpdate) {
 		//console.log(currentPlayersJson + ' vs: ' + playersJson);
 		if(currentPlayersJson != playersJson) {
 			playersJson = currentPlayersJson;
-			gutil.log('change in player DB detected, retriggering sound building process...');
+			gutil.log('change in player DB detected, retriggering sound downloading process...');
 			cbOnUpdate();
 			return;
 		}
@@ -107,33 +107,7 @@ function updateSounds(cb) {
             }, cb);
         }
 
-    ], function() {
-		async.parallel([
-			function(cb) {
-		        var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', function(err,stdout,stderr) { 
-					if(err) {
-						gutil.log(err);
-					}
-					if(stdout) {
-				        gutil.log(stdout);
-				    }
-					if(stderr) {
-						gutil.log(stderr);
-				    }
-					cb();
-				});
-		
-		        gutil.log("updating sprite...");
-		        if(downloads.length > 0) {
-		            return es.merge.apply(undefined, downloads).on('end', function() {
-			            updateSprite();
-		            });
-		        }
-		
-		        updateSprite();
-			}
-		], cb);
-    });
+    ]);
 
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {
