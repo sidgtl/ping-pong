@@ -2,4 +2,5 @@
 .idea/
 ui/public/build/
 versions/
-
+ui/public/sounds/
+ui/public/img/
