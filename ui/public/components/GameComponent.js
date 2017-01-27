@@ -230,6 +230,8 @@ var GameComponent = module.exports = React.createClass({
 				var audio = new Audio(soundPath + sound.name + ".mp3");
 				audio.addEventListener('loadedmetadata', function() {
 	                var duration = audio.duration;
+					// chromium reports too long durations
+					duration = duration*0.5;
 	                offset = sound.offsetNext ? duration*1000 + sound.offsetNext : duration*1000;
 	                audio.play();
 					setTimeout(function() {
