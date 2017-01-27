@@ -164,18 +164,18 @@ var StatsComponent = module.exports = React.createClass({
                         </div>
                     </div>
                 );
-            } else if(typeof this.props.player0.name !== 'undefined' &&  typeof this.props.player1.name !== 'undefined') {
+            } else if(typeof this.props.players[0] !== 'undefined' &&  typeof this.props.players[1] !== 'undefined') {
                 score = (
                     <div className="stats__component" key="last-game">
                         <span className="header stats__title">Last Game</span>
                         <div className="stat_score">
                             0
-                            <span className="stat_score_player">{this.props.player0.name}</span>
+                            <span className="stat_score_player">{this.props.players[0].name}</span>
                         </div>
                         <div className="stat_dash">-</div>
                         <div className="stat_score">
                             0
-                            <span className="stat_score_player">{this.props.player1.name}</span>
+                            <span className="stat_score_player">{this.props.players[1].name}</span>
                         </div>
                     </div>
                 );
@@ -187,12 +187,12 @@ var StatsComponent = module.exports = React.createClass({
                         <span className="header stats__title">Final Score</span>
                         <div className="stat_score">
                             {this.props.score[0]}
-                            <span className="stat_score_player">{this.props.player0.name}</span>
+                            <span className="stat_score_player">{this.props.players[0].name}</span>
                         </div>
                         <div className="stat_dash">-</div>
                         <div className="stat_score">
                             {this.props.score[1]}
-                            <span className="stat_score_player">{this.props.player1.name}</span>
+                            <span className="stat_score_player">{this.props.players[1].name}</span>
                         </div>
                     </div>
                 );
@@ -217,12 +217,12 @@ var StatsComponent = module.exports = React.createClass({
                     <span className="header stats__title">Head To Head</span>
                     <div className="stat_score">
                         {headToHeadScore[0]}
-                        <span className="stat_score_player">{this.props.player0.name}</span>
+                        <span className="stat_score_player">{this.props.players[0].name}</span>
                     </div>
                     <div className="stat_dash">-</div>
                     <div className="stat_score">
                         {headToHeadScore[1]}
-                        <span className="stat_score_player">{this.props.player1.name}</span>
+                        <span className="stat_score_player">{this.props.players[1].name}</span>
                     </div>
                 </div>
             );

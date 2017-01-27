@@ -161,7 +161,7 @@ gulp.task('sounds', function(cb) {
 
             async.whilst(incomplete, function(cb) {
                 i ++;
-                getTTS(i, 'en-gb', function(res) {
+                getTTS(i, 'en-us', function(res) {
                     if(res.writable) {
                         downloads.push(res);
                     }
@@ -188,7 +188,7 @@ gulp.task('sounds', function(cb) {
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {
             announcement = announcement(player);
-            getTTS(announcement, 'en-gb', cb);
+            getTTS(announcement, 'en-us', cb);
         }, cb);
     }
     
@@ -198,10 +198,10 @@ gulp.task('sounds', function(cb) {
 
 function getTTS(phrase, language, cb) {
 
-    language = language || 'en-gb';
+    language = language || 'en-us';
 
     var
-        requestURL = 'http://translate.google.com/translate_tts?ie=UTF-8&q=' + phrase + '&tl=' + language + '&client=' + language,
+		requestURL = 'http://api.voicerss.org/?key=33661942924e4256851b0145cb93ec3a&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
         fileName = slug(phrase).toLowerCase() + '.mp3',
         filePath = path.join('./ui/public/sounds/', fileName),
         res = true;

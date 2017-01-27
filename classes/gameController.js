@@ -134,8 +134,8 @@ gameController.prototype.addPlayer = function(playerID, custom) {
             return;
         }
 
-        if(players.length === settings.maxPlayers) {
-            // A third player joined, prompting the game to be reset
+        if(players.length > settings.maxPlayers) {
+            // maxPlayers+1 player joined, prompting the game to be reset
             console.log(chalk.yellow('A third player joined, resetting the game'));
             return game.end(false);
         }
@@ -157,11 +157,6 @@ gameController.prototype.addPlayer = function(playerID, custom) {
         }
         
         // Notify the client a player has joined
-        io.sockets.emit('player' + position + '.join', {
-            player: player.toJSON(),
-            position: players.indexOf(player)
-        });
-        
         io.sockets.emit('player.join', {
             player: player.toJSON(),
             position: players.indexOf(player)
@@ -281,7 +276,7 @@ gameController.prototype.end = function(complete) {
  */
 gameController.prototype.feelerPressed = function(data) {
     var positionId = data - 1;
-    console.log('press event player ' + data);
+    console.log('press event player ' + data.name);
     this.feelers[positionId].emit('score');
 };
 
@@ -506,7 +501,7 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
     var
         _this = this,
         totalScore = this.score[0] + this.score[1],
-        pointJustCancelled = this.gameHistory.length > 0 && this.gameHistory[0].action == 'cancelPoint',
+        pointJustCancelled = this.gameHistory.length > 0 && this.gameHistory[0].action === 'cancelPoint',
         switchServer = totalScore % settings.serverSwitchLimit === 0 || this.serverSwitchThresholdMet() || typeof forceServe !== 'undefined',
         switchPreviousServer = (totalScore + 1) % settings.serverSwitchLimit === 0 && pointJustCancelled;
     
@@ -515,7 +510,7 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
         if(typeof forceServe !== 'undefined') {
             serve = forceServe;
         } else if(this.score[0] > 0 || this.score[1] > 0) {
-            serve = (serve == 1) ? 0 : 1;
+            serve = (((serve + (players.length / 2)) % players.length) + 1) % players.length;
             // A point was just cancelled, switch to previous server
             if(switchPreviousServer) {
                 serve = serve;
