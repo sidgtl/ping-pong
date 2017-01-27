@@ -15,24 +15,28 @@ var playersJson = undefined;
 
 async.forever(
 	function(next) {
-		watchPlayers(
-			function() {
-				setTimeout(function() {
-					next();
-				}, interval)
-			}, 
-			function() {
-				updateSounds(function(err,stdout,stderr) { 
-					gutil.log('finished updating sounds');
+		try {
+			watchPlayers(
+				function() {
 					setTimeout(function() {
 						next();
-					}, interval);
-				});
-			}
-		);
+					}, interval)
+				}, 
+				function() {
+					updateSounds(function(err,stdout,stderr) { 
+						gutil.log('finished updating sounds');
+						setTimeout(function() {
+							next();
+						}, interval);
+					});
+				}
+			);
+		} catch (ex) {
+			gutil.log('watch players came across error: ' + ex);
+		}
 	},
 	function(err) {
-		gutil.log('error: ' + error);
+		gutil.log('encountered error: ' + error);
 		process.exit();
 	}
 );
@@ -47,7 +51,6 @@ function watchPlayers(loopCb, cbOnUpdate) {
 			playersJson = currentPlayersJson;
 			gutil.log('change in player DB detected, retriggering sound downloading process...');
 			cbOnUpdate();
-			return;
 		}
 		loopCb();
 	}); 
