@@ -166,30 +166,18 @@ gulp.task('sounds', function(cb) {
                 };
 
             async.whilst(incomplete, function(cb) {
-                i ++;
                 getTTS(i, 'en-US', function(res) {
                     if(res.writable) {
 						gutil.log("pushing tts of " + i + " to download queue");
                         downloads.push(res);
                     }
+                	i ++;
                     cb();
                 });
             }, cb);
         }
     
-    ], function() {
-        var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', cb);
-        
-        if(downloads.length > 0) {
-            return es.merge.apply(undefined, downloads).on('end', function() {
-				gutil.log("updating sprite...");
-                updateSprite();
-            });
-        }
-        
-        updateSprite();
-        
-    });
+    ]);
         
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {

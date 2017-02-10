@@ -15,24 +15,28 @@ var playersJson = undefined;
 
 async.forever(
 	function(next) {
-		watchPlayers(
-			function() {
-				setTimeout(function() {
-					next();
-				}, interval)
-			}, 
-			function() {
-				updateSounds(function(err,stdout,stderr) { 
-					gutil.log('finished updating sounds');
+		try {
+			watchPlayers(
+				function() {
 					setTimeout(function() {
 						next();
-					}, interval);
-				});
-			}
-		);
+					}, interval)
+				}, 
+				function() {
+					updateSounds(function(err,stdout,stderr) { 
+						gutil.log('finished updating sounds');
+						setTimeout(function() {
+							next();
+						}, interval);
+					});
+				}
+			);
+		} catch (ex) {
+			gutil.log('watch players came across error: ' + ex);
+		}
 	},
 	function(err) {
-		gutil.log('error: ' + error);
+		gutil.log('encountered error: ' + error);
 		process.exit();
 	}
 );
@@ -45,9 +49,8 @@ function watchPlayers(loopCb, cbOnUpdate) {
 		//console.log(currentPlayersJson + ' vs: ' + playersJson);
 		if(currentPlayersJson != playersJson) {
 			playersJson = currentPlayersJson;
-			gutil.log('change in player DB detected, retriggering sound building process...');
+			gutil.log('change in player DB detected, retriggering sound downloading process...');
 			cbOnUpdate();
-			return;
 		}
 		loopCb();
 	}); 
@@ -96,44 +99,18 @@ function updateSounds(cb) {
                 };
 
             async.whilst(incomplete, function(cb) {
-                i ++;
                 getTTS(i, 'en-US', function(res) {
                     if(res.writable) {
                         gutil.log("pushing tts of " + i + " to download queue");
                         downloads.push(res);
                     }
+                	i ++;
                     cb();
                 });
             }, cb);
         }
 
-    ], function() {
-		async.parallel([
-			function(cb) {
-		        var updateSprite = exec.bind(undefined, 'audiosprite --format howler --path build/ --output ui/public/build/sprite --export mp3 ui/public/sounds/*.mp3 ui/public/sounds/*.wav', function(err,stdout,stderr) { 
-					if(err) {
-						gutil.log(err);
-					}
-					if(stdout) {
-				        gutil.log(stdout);
-				    }
-					if(stderr) {
-						gutil.log(stderr);
-				    }
-					cb();
-				});
-		
-		        gutil.log("updating sprite...");
-		        if(downloads.length > 0) {
-		            return es.merge.apply(undefined, downloads).on('end', function() {
-			            updateSprite();
-		            });
-		        }
-		
-		        updateSprite();
-			}
-		], cb);
-    });
+    ]);
 
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {

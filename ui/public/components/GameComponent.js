@@ -3,13 +3,9 @@
  */
 'use strict';
 
-
-
 var
     React = require('react'),
     AmpersandState = require('ampersand-state'),
-    Howl = require('howler').Howl,
-    soundSprite = require('../build/sprite'),
     config = window.config,
     node = require('../js/node'),
     AdminComponent = require('./AdminComponent'),
@@ -17,14 +13,13 @@ var
     StatusComponent = require('./StatusComponent'),
     StatusIndicatorComponent = require('./StatusIndicatorComponent'),
     StatsComponent = require('./StatsComponent'),
-    soundPath = config.clientUrl + '/sounds/',
-    soundQueue = [],
-    soundsPlaying = false,
-    sounds,
+    soundPath = '/sounds/',
     PlayerModel,
     playerProps,
     player0,
-    player1;
+    player1,
+	soundQueue = [],
+	soundsPlaying = false;
 
 
 // The beginnings of a model for sharing state between components
@@ -46,6 +41,7 @@ var GameComponent = module.exports = React.createClass({
 
 
 
+
     getInitialState: function() {
         return {
             server: undefined,
@@ -61,8 +57,6 @@ var GameComponent = module.exports = React.createClass({
     componentDidMount: function() {
 
         var _this = this;
-        
-        sounds = new Howl(soundSprite);
         
         node.socket.on('game.end', _this.end);
         node.socket.on('game.score', _this.score);
@@ -110,8 +104,8 @@ var GameComponent = module.exports = React.createClass({
             playerSound = player1.name;
         }
 
-        this.queueSound(playerSound.toLowerCase() + '-to-serve');
-
+		// cut down the delay between "player X to serve" and the score announcement by 500 ms
+		this.queueSound(playerSound.toLowerCase() + '-to-serve', -500);
     },
     
     
@@ -129,9 +123,10 @@ var GameComponent = module.exports = React.createClass({
         // announcement. For example, when a service change occurs,
         // we want to defer the score announcement to after the
         // service change announcement.
+		this.queueSound('scored');
         setTimeout(function() {
             _this.announceScore();
-        }, 0);
+        }, 500);
 
     },
 
@@ -152,7 +147,6 @@ var GameComponent = module.exports = React.createClass({
         }
 
         this.queueSound('game-point-' + playerSound.toLowerCase());
-        
     },
     
     
@@ -160,6 +154,7 @@ var GameComponent = module.exports = React.createClass({
     announceScore: function() {
     
         var announcement = this.state.score;
+		var _this = this;
         
         if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
         
@@ -167,12 +162,11 @@ var GameComponent = module.exports = React.createClass({
             if(this.state.server == 1) {
                 announcement.reverse();
             }
-            
-            this.queueSound('' + announcement[0], -300);
-            this.queueSound('' + announcement[1]);
-            
+
+			// cut down the delay between the score announcements of the two sides
+			this.queueSound('' + announcement[0], -500);
+			this.queueSound('' + announcement[1]);
         }
-    
     },
     
     
@@ -183,6 +177,7 @@ var GameComponent = module.exports = React.createClass({
             _this = this,
             playerSound = '';
         
+		this.resetQueue();
         this.setState({ winner: data.winner });
         
         if(data.winner == 0) {
@@ -193,16 +188,69 @@ var GameComponent = module.exports = React.createClass({
             playerSound = player1.name;
         }
         
-        this.clearAudioQueue();
-        sounds.play('game_end');
-        
+        this.queueSound('game_end');
         setTimeout(function() {
-            this.queueSound(playerSound.toLowerCase + '-won-the-game');
+            _this.queueSound(playerSound.toLowerCase() + '-won-the-game');
         }, 900);
-        
     },
-    
-    
+
+	resetQueue: function() {
+		soundQueue = [];
+	},
+	
+	queueSound: function(sound, offset, cb) {
+        soundQueue.push({
+            name: sound,
+            offsetNext: typeof offset === 'undefined' ? 0 : offset,
+            cb: cb
+        });
+        this.playQueue();
+    },
+
+    playQueue: function() {
+
+        var
+            _this = this,
+            play;
+
+        if(soundsPlaying) {
+            return;
+        }
+
+        soundsPlaying = true;
+
+        play = function() {
+
+            var
+                sound = {},
+                offset = 0;
+
+            if(soundQueue.length > 0) {
+                sound = soundQueue.shift();
+				var audio = new Audio(soundPath + sound.name + ".mp3");
+				audio.addEventListener('loadedmetadata', function() {
+	                var duration = audio.duration;
+					// chromium reports too long durations
+					duration = duration/2.1;
+	                offset = sound.offsetNext ? duration*1000 + sound.offsetNext : duration*1000;
+	                audio.play();
+					setTimeout(function() {
+	                    play();
+	                    if(sound.cb) {
+	                        sound.cb();
+	                    }
+	                }, offset);
+				});
+            } else {
+                soundsPlaying = false;
+            }
+
+        }
+
+        play();
+
+    },
+
     
     tableConnected: function() {
         this.setState({
@@ -242,67 +290,6 @@ var GameComponent = module.exports = React.createClass({
         });
     },
     
-    
-    
-    queueSound: function(sound, offset, cb) {
-        soundQueue.push({
-            name: sound,
-            offsetNext: typeof offset === 'undefined' ? 0 : offset,
-            cb: cb
-        });
-        this.playQueue();
-    },
-    
-    
-    
-    playQueue: function() {
-        
-        var
-            _this = this,
-            play;
-        
-        if(soundsPlaying) {
-            return;
-        }
-        
-        soundsPlaying = true;
-        
-        play = function() {
-            
-            var
-                sound = {},
-                duration = 0,
-                offset = 0;
-
-            if(soundQueue.length > 0) {
-                sound = soundQueue.shift();
-                duration = soundSprite.sprite[sound.name][1];
-                offset = sound.offsetNext ? duration + sound.offsetNext : duration;
-                sounds.play(sound.name);
-                setTimeout(function() {
-                    play();
-                    if(sound.cb) {
-                        sound.cb();
-                    }
-                }, offset);
-            } else {
-                soundsPlaying = false;
-            }
-
-        }
-
-        play();
-
-    },
-    
-    
-    
-    clearAudioQueue: function() {
-        soundQueue = [];
-    },
-
-
-
     reset: function() {
 
         setTimeout(function() {
