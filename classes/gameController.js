@@ -126,99 +126,57 @@ gameController.prototype.addPlayerByRfid = function (rfid) {
 /**
  * Add a player to the game
  */
-gameController.prototype.addPlayer = function (playerID, custom) {
+gameController.prototype.addPlayer = function(playerID, custom) {
+    
+    var
+        attr = playerID !== null ? 'id' : custom.attr,
+        value = playerID !== null ? playerID : custom.value,
+        position;
+    
+    // Load the model for the added player
+    Player.where(attr, value).fetch().then(function(player) {
+        
+        if(!player) {
+            console.log(chalk.red('Player ' + value + ' not found'));
+            io.sockets.emit('game.playerNotFound', {
+                attr: attr,
+                value: value
+            });
+            return;
+        }
 
-	var
-		attr = playerID !== null ? 'id' : custom.attr,
-		value = playerID !== null ? playerID : custom.value,
-		position;
-
-	// Load the model for the added player
-	Player.where(attr, value).fetch().then(function (player) {
-
-		if (!player) {
-			console.log(chalk.red('Newbie ' + value + ' wants to start a game'));
-
-			new Player({rfid: value, name: first_set_random_names.randomElement() + ' ' + second_set_random_names.randomElement(), gender: 'male'}).save().then(function (newbie) {
-				console.log(JSON.stringify(newbie));
-
-				if (players.length === settings.maxPlayers) {
-					// A third player joined, prompting the game to be reset
-					console.log(chalk.yellow('A third player joined, resetting the game'));
-					return game.end(false);
-				}
-
-				if (game.playerInGame(newbie.id)) {
-					console.log(chalk.red(newbie.get('name') + ' is already in the game!'));
-					return;
-				}
-
-				console.log(chalk.green('Player added: ' + newbie.get('name')));
-
-				players.push(newbie);
-				position = players.indexOf(newbie);
-				elo.addPlayer(newbie, position);
-
-				if (players.length === settings.minPlayers) {
-					console.log("game ready!\n");
-					game.ready();
-				}
-
-				// Notify the client a player has joined
-				io.sockets.emit('player' + position + '.join', {
-					player: newbie.toJSON(),
-					position: players.indexOf(newbie)
-				});
-
-				io.sockets.emit('player.join', {
-					player: newbie.toJSON(),
-					position: players.indexOf(newbie)
-				});
-
-				io.sockets.emit('leaderboard.hide');
-			});
-
-
-			return;
-		}
-
-		if (players.length === settings.maxPlayers) {
-			// A third player joined, prompting the game to be reset
-			console.log(chalk.yellow('A third player joined, resetting the game'));
-			return game.end(false);
-		}
-
-		if (game.playerInGame(player.id)) {
-			console.log(chalk.red(player.get('name') + ' is already in the game!'));
-			return;
-		}
-
-		console.log(chalk.green('Player added: ' + player.get('name')));
-
-		players.push(player);
-		position = players.indexOf(player);
-		elo.addPlayer(player, position);
-
-		if (players.length === settings.minPlayers) {
-			console.log("game ready!\n");
-			game.ready();
-		}
-
-		// Notify the client a player has joined
-		io.sockets.emit('player' + position + '.join', {
-			player: player.toJSON(),
-			position: players.indexOf(player)
-		});
-
-		io.sockets.emit('player.join', {
-			player: player.toJSON(),
-			position: players.indexOf(player)
-		});
-
-		io.sockets.emit('leaderboard.hide');
-
-	});
-
+        if(players.length > settings.maxPlayers) {
+            // maxPlayers+1 player joined, prompting the game to be reset
+            console.log(chalk.yellow('A third player joined, resetting the game'));
+            return game.end(false);
+        }
+        
+        if(game.playerInGame(player.id)) {
+            console.log(chalk.red(player.get('name') + ' is already in the game!'));
+            return;
+        } 
+        
+        console.log(chalk.green('Player added: ' + player.get('name')));
+        
+        players.push(player);
+        position = players.indexOf(player);
+        elo.addPlayer(player, position);
+        
+        if(players.length === settings.minPlayers) {
+          console.log("game ready!\n");
+          game.ready();
+        }
+        
+        // Notify the client a player has joined
+        io.sockets.emit('player.join', {
+            player: player.toJSON(),
+            position: players.indexOf(player)
+        });
+        
+        io.sockets.emit('leaderboard.hide');
+    
+    });
+    
 };
 
 Array.prototype.randomElement = function () {
@@ -327,10 +285,10 @@ gameController.prototype.end = function (complete) {
  * number of presses received in a specified threshold –
  * i.e. `score` or `removePoint`.
  */
-gameController.prototype.feelerPressed = function (data) {
-	var positionId = data - 1;
-	console.log('press event player ' + data);
-	this.feelers[positionId].emit('score');
+gameController.prototype.feelerPressed = function(data) {
+    var positionId = data - 1;
+    console.log('press event player ' + data.name);
+    this.feelers[positionId].emit('score');
 };
 
 
@@ -543,38 +501,38 @@ gameController.prototype.checkWon = function () {
 /**
  * Is it time to switch servers?
  */
-gameController.prototype.checkServerSwitch = function (forceServe) {
+gameController.prototype.checkServerSwitch = function(forceServe) {
 
-	var
-		_this = this,
-		totalScore = this.score[0] + this.score[1],
-		pointJustCancelled = this.gameHistory.length > 0 && this.gameHistory[0].action == 'cancelPoint',
-		switchServer = totalScore % settings.serverSwitchLimit === 0 || this.serverSwitchThresholdMet() || typeof forceServe !== 'undefined',
-		switchPreviousServer = (totalScore + 1) % settings.serverSwitchLimit === 0 && pointJustCancelled;
+    var
+        _this = this,
+        totalScore = this.score[0] + this.score[1],
+        pointJustCancelled = this.gameHistory.length > 0 && this.gameHistory[0].action === 'cancelPoint',
+        switchServer = totalScore % settings.serverSwitchLimit === 0 || this.serverSwitchThresholdMet() || typeof forceServe !== 'undefined',
+        switchPreviousServer = (totalScore + 1) % settings.serverSwitchLimit === 0 && pointJustCancelled;
+    
+    if(switchServer || switchPreviousServer) {
+        
+        if(typeof forceServe !== 'undefined') {
+            serve = forceServe;
+        } else if(this.score[0] > 0 || this.score[1] > 0) {
+            serve = (((serve + (players.length / 2)) % players.length) + 1) % players.length;
+            // A point was just cancelled, switch to previous server
+            if(switchPreviousServer) {
+                serve = serve;
+            }
+        }
 
-	if (switchServer || switchPreviousServer) {
+        this.gameHistory.unshift({
+            action: 'switchServers',
+            server: serve,
+            score: this.score.slice()
+        });
 
-		if (typeof forceServe !== 'undefined') {
-			serve = forceServe;
-		} else if (this.score[0] > 0 || this.score[1] > 0) {
-			serve = (serve == 1) ? 0 : 1;
-			// A point was just cancelled, switch to previous server
-			if (switchPreviousServer) {
-				serve = serve;
-			}
-		}
-
-		this.gameHistory.unshift({
-			action: 'switchServers',
-			server: serve,
-			score: this.score.slice()
-		});
-
-		io.sockets.emit('game.switchServer', {
-			player: serve
-		});
-
-	}
+        io.sockets.emit('game.switchServer', {
+            player: serve
+        });
+        
+    }
 };
 
 

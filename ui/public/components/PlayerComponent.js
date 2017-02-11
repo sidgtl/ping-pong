@@ -32,21 +32,22 @@ var PlayerComponent = module.exports = React.createClass({
     componentDidMount: function() {
         
         var
-            _this = this,
-            positionNS = 'player' + _this.props.positionId;
-        
-        this.props.player.on('change', function(player) {
-            _this.join(player);
+            _this = this;
+
+        this.props.players.map(function(player) {
+            player.on('change', function(player) {
+				_this.join(player);
+			});
         });
         
         node.socket.on('game.score', function(data) {
-            if(data.player == _this.props.positionId) {
+            if(data.player % 2 == _this.props.positionId) {
                 _this.score(data.score);
             }
         });
         
         node.socket.on('game.gamePoint', function(data) {
-            if(data.player == _this.props.positionId) {
+            if(data.player % 2 == _this.props.positionId) {
                 _this.gamePoint();
             } else {
                 _this.gamePoint(false);
@@ -58,13 +59,13 @@ var PlayerComponent = module.exports = React.createClass({
         });
         
         node.socket.on('game.cancelPoint', function(data) {
-            if(data.player == _this.props.positionId) {
+            if(data.player % 2 == _this.props.positionId) {
                 _this.cancelPoint(data.score);
             }
         });
 
         node.socket.on('game.end', function(data) {
-            if(data.winner == _this.props.positionId) {
+            if(data.winner % 2 == _this.props.positionId) {
                 return _this.win();
             }
             _this.lose();
@@ -117,7 +118,7 @@ var PlayerComponent = module.exports = React.createClass({
             
             if(typeof _this.pulse === 'undefined') {
                 this.pulse = setInterval(function() {
-                    if(_this.props.server == _this.props.positionId) {
+                    if(_this.props.server % 2 == _this.props.positionId) {
                         _this.setState({
                             gamePointVisible: !_this.state.gamePointVisible
                         });
@@ -177,6 +178,7 @@ var PlayerComponent = module.exports = React.createClass({
     render: function() {
 
         var
+			_this = this,
             playerClasses,
             style = {},
             status,
@@ -186,17 +188,18 @@ var PlayerComponent = module.exports = React.createClass({
             details,
             winner;
 
-        if(this.props.player.image) {
-            style = { 'background-image': 'url(img/players/' + this.props.player.image + ')' };
-            if(this.state.win) {
-                style = { 'background-image': 'url(img/players/win/' + this.props.player.image + ')' };
-            }
+        if(!this.state.name && typeof this.props.players[this.props.positionId] !== 'undefined' && this.props.players[this.props.positionId].image) {
+            style = { 'background-image': 'url(img/players/' + this.props.players[this.props.positionId].image + ')' };
         }
+
+		if(this.state.win) {
+			style = { 'background-image': 'url(img/players/win/' + this.props.players[this.props.positionId].image + ')' };
+		}
 
         playerClasses = 'player player_' + this.props.positionId;
 
-        if(this.props.server == this.props.positionId && !this.state.win) {
-            status = <div className={statusClasses}></div>;
+        if(this.props.server % 2 == this.props.positionId && !this.state.win) {
+            status = <div className={statusClasses}>{this.props.players[this.props.server].name}</div>;
         }
         
         if(this.state.win && !this.state.lose) {
@@ -211,7 +214,7 @@ var PlayerComponent = module.exports = React.createClass({
             details = (
                 <div className='details'>
                     <div className='score'>{this.state.score}</div>
-                    <div className='name'>{this.props.player.name}</div>
+                    <div className='name'>{(this.props.players.length && this.props.players.filter(function(v,i){return i%2 == _this.props.positionId;}).map(function(v) { return v.name; }).join(', ')) || 'Add player'}</div>
                 </div>
             );
         }
@@ -228,7 +231,7 @@ var PlayerComponent = module.exports = React.createClass({
         
         if(this.state.win) {
             winner = (
-                <div className='winner'>{this.props.player.name} Wins!</div>
+                <div className='winner'>{this.props.players.map(function(v) { return v.name; }).join(', ')} Wins!</div>
             );
         }
 
