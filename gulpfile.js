@@ -192,7 +192,7 @@ gulp.task('sounds', function(cb) {
 
 function getTTS(phrase, language, cb) {
 
-    language = language || 'en-gb';
+    language = language || 'en-us';
 
     var
 	requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
