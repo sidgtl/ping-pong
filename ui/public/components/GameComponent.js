@@ -6,6 +6,7 @@
 var
     React = require('react'),
     AmpersandState = require('ampersand-state'),
+	slug = require('slug'),
     config = window.config,
     node = require('../js/node'),
     AdminComponent = require('./AdminComponent'),
@@ -92,7 +93,7 @@ var GameComponent = module.exports = React.createClass({
         playerSound = players[player].name;
 
 		// cut down the delay between "player X to serve" and the score announcement by 500 ms
-		this.queueSound(playerSound.toLowerCase() + '-to-serve', -500);
+		this.queueSound(slug(playerSound.toLowerCase()) + '-to-serve', -500);
     },
 
 
@@ -133,7 +134,7 @@ var GameComponent = module.exports = React.createClass({
             playerSound = player1.name;
         }
 
-        this.queueSound('game-point-' + playerSound.toLowerCase());
+        this.queueSound('game-point-' + slug(playerSound.toLowerCase()));
     },
 
 
@@ -179,7 +180,7 @@ var GameComponent = module.exports = React.createClass({
         this.queueSound('game_end');
 
         setTimeout(function() {
-            _this.queueSound(playerSound.toLowerCase() + '-won-the-game');
+            _this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
         }, 900);
     },
 
