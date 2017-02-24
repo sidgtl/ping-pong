@@ -1,0 +1,9 @@
+{
+	"curly": true,
+	"trailing": true,
+	"undef": true,
+	"node": true,
+	"devel": true,
+	"globalstrict": true,
+	"loopfunc": true
+}

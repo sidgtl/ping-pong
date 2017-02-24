@@ -82,3 +82,19 @@ def matchQuality(team1,team2):
 #submitMatchResult(team1 = "3", team2="1", winningTeam=1)
 #matchQuality(team1="1",team2="3")
 
+<<<<<<< HEAD
+=======
+# to make functions accessible from the commandline
+if __name__ == '__main__':
+    import sys
+    function = getattr(sys.modules[__name__], sys.argv[1])
+
+    if(len(sys.argv) == 2):
+        function()
+    elif(len(sys.argv) == 3):
+        function(sys.argv[2])
+    elif(len(sys.argv) == 4):
+        function(sys.argv[2], sys.argv[3])
+    elif(len(sys.argv) == 5):
+        function(sys.argv[2], sys.argv[3], sys.argv[4])
+>>>>>>> raspberry

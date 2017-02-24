@@ -3,13 +3,10 @@
  */
 'use strict';
 
-
-
 var
     React = require('react'),
     AmpersandState = require('ampersand-state'),
-    Howl = require('howler').Howl,
-    soundSprite = require('../build/sprite'),
+	slug = require('slug'),
     config = window.config,
     node = require('../js/node'),
     AdminComponent = require('./AdminComponent'),
@@ -17,14 +14,17 @@ var
     StatusComponent = require('./StatusComponent'),
     StatusIndicatorComponent = require('./StatusIndicatorComponent'),
     StatsComponent = require('./StatsComponent'),
-    soundPath = config.clientUrl + '/sounds/',
-    soundQueue = [],
-    soundsPlaying = false,
-    sounds,
+    soundPath = '/sounds/',
     PlayerModel,
     playerProps,
+<<<<<<< HEAD
     players = [];
 
+=======
+	soundQueue = [],
+	soundsPlaying = false,
+    players = [];
+>>>>>>> raspberry
 
 // The beginnings of a model for sharing state between components
 playerProps = {
@@ -39,6 +39,7 @@ PlayerModel = AmpersandState.extend({
 
 
 var GameComponent = module.exports = React.createClass({
+
 
 
 
@@ -58,8 +59,11 @@ var GameComponent = module.exports = React.createClass({
 
         var _this = this;
 
+<<<<<<< HEAD
         sounds = new Howl(soundSprite);
 
+=======
+>>>>>>> raspberry
         node.socket.on('game.end', _this.end);
         node.socket.on('game.score', _this.score);
         node.socket.on('game.reset', _this.reset);
@@ -97,9 +101,14 @@ var GameComponent = module.exports = React.createClass({
         });
 
         playerSound = players[player].name;
+<<<<<<< HEAD
 
         this.queueSound(playerSound.toLowerCase() + '-to-serve');
+=======
+>>>>>>> raspberry
 
+		// cut down the delay between "player X to serve" and the score announcement by 500 ms
+		this.queueSound(slug(playerSound.toLowerCase()) + '-to-serve', -500);
     },
 
 
@@ -117,9 +126,10 @@ var GameComponent = module.exports = React.createClass({
         // announcement. For example, when a service change occurs,
         // we want to defer the score announcement to after the
         // service change announcement.
+		this.queueSound('scored');
         setTimeout(function() {
             _this.announceScore();
-        }, 0);
+        }, 500);
 
     },
 
@@ -139,8 +149,12 @@ var GameComponent = module.exports = React.createClass({
             playerSound = player1.name;
         }
 
+<<<<<<< HEAD
         this.queueSound('game-point-' + playerSound.toLowerCase());
 
+=======
+        this.queueSound('game-point-' + slug(playerSound.toLowerCase()));
+>>>>>>> raspberry
     },
 
 
@@ -148,7 +162,12 @@ var GameComponent = module.exports = React.createClass({
     announceScore: function() {
 
         var announcement = this.state.score;
+<<<<<<< HEAD
 
+=======
+		var _this = this;
+        
+>>>>>>> raspberry
         if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
 
             // Announce the server's score first
@@ -156,9 +175,15 @@ var GameComponent = module.exports = React.createClass({
                 announcement.reverse();
             }
 
+<<<<<<< HEAD
             this.queueSound('' + announcement[0], -300);
             this.queueSound('' + announcement[1]);
 
+=======
+			// cut down the delay between the score announcements of the two sides
+			this.queueSound('' + announcement[0], -500);
+			this.queueSound('' + announcement[1]);
+>>>>>>> raspberry
         }
 
     },
@@ -170,7 +195,12 @@ var GameComponent = module.exports = React.createClass({
         var
             _this = this,
             playerSound = '';
+<<<<<<< HEAD
 
+=======
+        
+		this.resetQueue();
+>>>>>>> raspberry
         this.setState({ winner: data.winner });
 
         if(data.winner == 0) {
@@ -180,13 +210,19 @@ var GameComponent = module.exports = React.createClass({
         if(data.winner == 1) {
             playerSound = player1.name;
         }
+<<<<<<< HEAD
 
         this.clearAudioQueue();
         sounds.play('game_end');
+=======
+        
+        this.queueSound('game_end');
+>>>>>>> raspberry
 
         setTimeout(function() {
-            this.queueSound(playerSound.toLowerCase + '-won-the-game');
+            _this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
         }, 900);
+<<<<<<< HEAD
 
     },
 
@@ -233,6 +269,15 @@ var GameComponent = module.exports = React.createClass({
 
 
     queueSound: function(sound, offset, cb) {
+=======
+    },
+
+	resetQueue: function() {
+		soundQueue = [];
+	},
+	
+	queueSound: function(sound, offset, cb) {
+>>>>>>> raspberry
         soundQueue.push({
             name: sound,
             offsetNext: typeof offset === 'undefined' ? 0 : offset,
@@ -241,8 +286,11 @@ var GameComponent = module.exports = React.createClass({
         this.playQueue();
     },
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> raspberry
     playQueue: function() {
 
         var
@@ -259,20 +307,24 @@ var GameComponent = module.exports = React.createClass({
 
             var
                 sound = {},
-                duration = 0,
                 offset = 0;
 
             if(soundQueue.length > 0) {
                 sound = soundQueue.shift();
-                duration = soundSprite.sprite[sound.name][1];
-                offset = sound.offsetNext ? duration + sound.offsetNext : duration;
-                sounds.play(sound.name);
-                setTimeout(function() {
-                    play();
-                    if(sound.cb) {
-                        sound.cb();
-                    }
-                }, offset);
+				var audio = new Audio(soundPath + sound.name + ".mp3");
+				audio.addEventListener('loadedmetadata', function() {
+	                var duration = audio.duration;
+					// chromium reports too long durations
+					duration = duration/2.1;
+	                offset = sound.offsetNext ? duration*1000 + sound.offsetNext : duration*1000;
+	                audio.play();
+					setTimeout(function() {
+	                    play();
+	                    if(sound.cb) {
+	                        sound.cb();
+	                    }
+	                }, offset);
+				});
             } else {
                 soundsPlaying = false;
             }
@@ -283,13 +335,50 @@ var GameComponent = module.exports = React.createClass({
 
     },
 
+<<<<<<< HEAD
 
 
     clearAudioQueue: function() {
         soundQueue = [];
+=======
+    tableConnected: function() {
+        this.setState({
+            table: true
+        });
+>>>>>>> raspberry
     },
 
 
+
+    tableDisconnected: function() {
+        this.setState({
+            table: false
+        });
+    },
+
+
+
+    cardReaderConnected: function() {
+        this.setState({
+            cardReader: true
+        });
+    },
+
+
+
+    cardReaderDisconnected: function() {
+        this.setState({
+            cardReader: false
+        });
+    },
+
+
+
+    tableBatteryLow: function() {
+        this.setState({
+            table: 'warning'
+        });
+    },
 
     reset: function() {
 
@@ -323,6 +412,10 @@ var GameComponent = module.exports = React.createClass({
         );
     }
 
+<<<<<<< HEAD
 
 
 });
+=======
+});
+>>>>>>> raspberry
