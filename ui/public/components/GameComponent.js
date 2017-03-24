@@ -126,13 +126,7 @@ var GameComponent = module.exports = React.createClass({
             player = data.player,
             playerSound;
 
-        if(player == 0) {
-            playerSound = player0.name;
-        }
-
-        if(player == 1) {
-            playerSound = player1.name;
-        }
+        playerSound = players[player].name;
 
         this.queueSound('game-point-' + slug(playerSound.toLowerCase()));
     },
@@ -169,13 +163,7 @@ var GameComponent = module.exports = React.createClass({
 		this.resetQueue();
         this.setState({ winner: data.winner });
 
-        if(data.winner == 0) {
-            playerSound = player0.name;
-        }
-
-        if(data.winner == 1) {
-            playerSound = player1.name;
-        }
+		playerSound = players[data.winner].name;
         
         this.queueSound('game_end');
 
