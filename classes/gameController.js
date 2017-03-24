@@ -147,7 +147,7 @@ gameController.prototype.addPlayer = function(playerID, custom) {
 
         if(players.length > settings.maxPlayers) {
             // maxPlayers+1 player joined, prompting the game to be reset
-            console.log(chalk.yellow('A third player joined, resetting the game'));
+            console.log(chalk.yellow('A ' + (settings.maxPlayers + 1) + '. player joined, resetting the game'));
             return game.end(false);
         }
         
@@ -287,7 +287,6 @@ gameController.prototype.end = function (complete) {
  */
 gameController.prototype.feelerPressed = function(data) {
     var positionId = data - 1;
-    console.log('press event player ' + data.name);
     this.feelers[positionId].emit('score');
 };
 

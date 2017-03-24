@@ -40,6 +40,7 @@ html.mobile, html.no-csstransitions {
 html {
     height: 100%;
     overflow-x: hidden;
+    font-size: 16px;
 }
 * {    
     -webkit-font-smoothing: antialiased;
@@ -51,7 +52,7 @@ html {
 body {
     width: 100%;
     height: 100%;
-    font-size: 19px;
+    font-size: 1em;
     font-family: "futura-pt-condensed",sans-serif;
     font-weight: 400;
     line-height: 100%;
@@ -115,7 +116,7 @@ body {
     height: 70px;
     line-height: 70px;
     color: #FFF;
-    font-size: 30px;
+    font-size: 1.875em; // 30px
     font-weight: 500;
 }
 @keyframes blink {
@@ -164,7 +165,7 @@ body {
         width: 100%;
         height: 70px;
         line-height: 70px;
-        font-size: 36px;
+        font-size: 2.250em; // 36px
         font-weight: 700;
         background: rgba(0,0,0,.2);
         color: #FFF;
@@ -205,21 +206,21 @@ body {
         top: 11vh;
     }
     .score {
-        font-size: 220px;
+        font-size: 13.750em; // 220px
     }
     .score,
     .winner {
         font-weight: 700;
-        line-height: 163px;
+        line-height: 1.25;
         margin-bottom: 16px;
     }
     .winner {
         top: 7vh;
-        font-size: 20vw;
+        font-size: 10vw;
     }
     .name {
-        font-size: 50px;
-        line-height: 43px;
+        font-size: 3.125em; // 50px;
+        line-height: 1.25;
     }
 }
 .winner-announcement-enter,
@@ -265,8 +266,8 @@ body {
 
         .header {
             display: block;
-            font-size: 30px;
-            line-height: 26px;
+            font-size: 1.875em; // 30px
+            line-height: 1.25;
         }
     }
     .stat_score {
@@ -274,14 +275,14 @@ body {
         vertical-align: top;
         font-weight: 700;
         margin: 0 15px 0 15px;
-        font-size: 60px;
-        line-height: 56px;
+        font-size: 2.625em; // 42px
+        line-height: 1.25;
     }
     .stat_score_player {
         display: block;
         margin-top: 20px;
-        font-size: 30px;
-        line-height: 24px;
+        font-size: 0.600em; // 36px
+        line-height: 1.25;
         font-weight: 400;
     }
     .stat_score:first-of-type .stat_score_player {
@@ -292,8 +293,8 @@ body {
     }
     .stat_dash {
         display: inline-block;
-        font-size: 60px;
-        line-height: 46px;
+        font-size: 2.625em; // 42px
+        line-height: 1.25;
         margin: 0;
     }
     .stats_right {
@@ -306,7 +307,7 @@ body {
         transform: translateX(-50%);
         display: block;
         line-height: 1;
-        font-size: 48px;
+        font-size: 3.000em; // 48px
         font-weight: 700;
         text-align: center;
         &:before {
@@ -452,8 +453,8 @@ body {
 }
 
 .leaderboard__player__name {
-    font-size: 60px;
-    line-height: 56px;
+    font-size: 2.625em; // 42px;
+    line-height: 1.25;
     font-weight: 700;
 }
 
@@ -530,7 +531,7 @@ body {
 
             h2 {
                 padding: 10px 0 0 10px;
-                font-size: 20px;
+                font-size: 1.250em; // 20px
                 font-weight: 700;
             }
         }
@@ -547,7 +548,7 @@ body {
             height: 32px;
             background-color: @colorRed;
             color: @colorWhite;
-            font-size: 38px;
+            font-size: 2.375em; // 38px
             line-height: 32px;
             cursor: pointer;
             &:before {

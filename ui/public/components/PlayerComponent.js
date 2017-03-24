@@ -214,7 +214,7 @@ var PlayerComponent = module.exports = React.createClass({
             details = (
                 <div className='details'>
                     <div className='score'>{this.state.score}</div>
-                    <div className='name'>{(this.props.players.length && this.props.players.filter(function(v,i){return i%2 == _this.props.positionId;}).map(function(v) { return v.name; }).join(', ')) || 'Add player'}</div>
+                    <div className='name'>{(this.props.players.length && this.props.players.filter(function(v,i){return i%2 == _this.props.positionId;}).map(function(v) { return v.name; }).join(' & ')) || 'Add player'}</div>
                 </div>
             );
         }
@@ -231,7 +231,7 @@ var PlayerComponent = module.exports = React.createClass({
         
         if(this.state.win) {
             winner = (
-                <div className='winner'>{this.props.players.map(function(v) { return v.name; }).join(', ')} Wins!</div>
+                <div className='winner'>{this.props.players.filter(function(v,i){return i%2 == _this.props.positionId;}).map(function(v) { return v.name; }).join(' & ')} {this.props.players.length > 2 ? 'win' : 'wins'}</div>
             );
         }
 
