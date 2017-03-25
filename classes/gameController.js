@@ -156,7 +156,7 @@ gameController.prototype.addPlayer = function(playerID, custom) {
             return;
         } 
         
-        console.log(chalk.green('Player added: ' + player.get('name')));
+        console.log(chalk.green('Player added: ' + player.get('name'))+' at position:'+players.indexOf(player));
         
         players.push(player);
         position = players.indexOf(player);
@@ -389,10 +389,11 @@ gameController.prototype.scored = function (event) {
 
 	var player = event.data;
 	var playerID = player - 1;
+	// in 3 or 4 players game the 2nd player of the team should the first time so the dashboard order agrees with the order at the table
 
 	if (!game.inProgress) {
 		// Game not started, try to start...
-		if (!game.start(playerID)) {
+		if (!game.start(player+1)) {
 			// Could not start, wait...
 			return;
 		}
@@ -514,21 +515,25 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
         if(typeof forceServe !== 'undefined') {
             serve = forceServe;
         } else if(this.score[0] > 0 || this.score[1] > 0) {
-            serve = (((serve + (players.length / 2)) % players.length) + 1) % players.length;
+            // this calculation also covers the serving in a 3 players game, in this case the code we still have to assume it's a 4 players game
+            modifiedPlayerCount = (players.length + players.length%2);
+            serve = ( ( serve - 1 ) + modifiedPlayerCount ) % modifiedPlayerCount;
             // A point was just cancelled, switch to previous server
             if(switchPreviousServer) {
                 serve = serve;
             }
         }
 
+        // in a 3 players game serve can be the virtual 4th player, in this case we have to change it to the single player (seve = 1)
+        realServe = serve >= players.length ? serve - 2 : serve;
         this.gameHistory.unshift({
             action: 'switchServers',
-            server: serve,
+            server: realServe,
             score: this.score.slice()
         });
 
         io.sockets.emit('game.switchServer', {
-            player: serve
+            player: realServe
         });
         
     }
