@@ -145,7 +145,7 @@ gameController.prototype.addPlayer = function(playerID, custom) {
             return;
         }
 
-        if(players.length > settings.maxPlayers) {
+        if(players.length >= settings.maxPlayers) {
             // maxPlayers+1 player joined, prompting the game to be reset
             console.log(chalk.yellow('A ' + (settings.maxPlayers + 1) + '. player joined, resetting the game'));
             return game.end(false);
