@@ -76,9 +76,18 @@ var GameComponent = module.exports = React.createClass({
 			players[data.position].set(data.player);
         });
 
+        node.socket.on('player.rematch', function() {
+			console.log('received rematch event');	
+            _this.rematch();
+        });
+
     },
 
 
+    rematch: function() {
+		this.queueSound('proceed');
+    },
+    
 
     switchServer: function(player) {
 
@@ -168,7 +177,9 @@ var GameComponent = module.exports = React.createClass({
         this.queueSound('game_end');
 
         setTimeout(function() {
-            _this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
+            //_this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
+			console.log(data.winner);
+			_this.queueSound(data.winner % 2 == 0 ? 'blue-team-dominating' : 'red-team-dominating');
         }, 900);
     },
 

@@ -1,5 +1,6 @@
 var
 	chalk = require('chalk'),
+    async = require('async'),
 	debounce = require('debounce'),
 	app = require('../app'),
 	elo = require('./eloComparator')(),
@@ -44,6 +45,7 @@ function gameController() {
 	this.inProgress = false;
 	this.feelers = [Feeler(), Feeler()];
 	this.gameHistory = [];
+	this.playersForRematch = [];
 
 	this.feelers.forEach(function (feeler, i) {
 		feeler.on('score', function () {
@@ -126,12 +128,16 @@ gameController.prototype.addPlayerByRfid = function (rfid) {
 /**
  * Add a player to the game
  */
-gameController.prototype.addPlayer = function(playerID, custom) {
+gameController.prototype.addPlayer = function(playerID, custom, cb) {
     
     var
         attr = playerID !== null ? 'id' : custom.attr,
         value = playerID !== null ? playerID : custom.value,
         position;
+
+    if(typeof cb === 'undefined') {
+        cb = function() {};
+    }
     
     // Load the model for the added player
     Player.where(attr, value).fetch().then(function(player) {
@@ -142,26 +148,29 @@ gameController.prototype.addPlayer = function(playerID, custom) {
                 attr: attr,
                 value: value
             });
+            cb();
             return;
         }
 
         if(players.length >= settings.maxPlayers) {
             // maxPlayers+1 player joined, prompting the game to be reset
             console.log(chalk.yellow('A ' + (settings.maxPlayers + 1) + '. player joined, resetting the game'));
+            cb();
             return game.end(false);
         }
         
         if(game.playerInGame(player.id)) {
             console.log(chalk.red(player.get('name') + ' is already in the game!'));
+            cb();
             return;
         } 
-        
-        console.log(chalk.green('Player added: ' + player.get('name'))+' at position:'+players.indexOf(player));
         
         players.push(player);
         position = players.indexOf(player);
         elo.addPlayer(player, position);
         
+        console.log(chalk.green('Player added: ' + player.get('name'))+' at position:'+position);
+
         if(players.length === settings.minPlayers) {
           console.log("game ready!\n");
           game.ready();
@@ -174,7 +183,8 @@ gameController.prototype.addPlayer = function(playerID, custom) {
         });
         
         io.sockets.emit('leaderboard.hide');
-    
+        
+        cb();
     });
     
 };
@@ -241,7 +251,9 @@ gameController.prototype.end = function (complete) {
 		winner: winningPlayer - 1
 	});
 
+	this.setPlayersForRematch(players.reverse());
 	setTimeout(function () {
+		_this.setPlayersForRematch([]);
 		io.sockets.emit('game.reset');
 	}, settings.winningViewDuration + 200);
 
@@ -260,12 +272,16 @@ gameController.prototype.end = function (complete) {
 		});
 
 	players.forEach(function (player, i) {
-
-		if (i === winningPlayer - 1) {
-			player.set('elo', elo.players[i].winningRank);
-		} else {
-			player.set('elo', elo.players[i].losingRank);
-		}
+        console.log('writing elo for player: ' + player.id + " winningPlayer=" + winningPlayer);
+        // elo only supports two players
+        if (i < 2)
+        {
+			if (i === winningPlayer - 1) {
+				player.set('elo', elo.players[i].winningRank);
+			} else {
+				player.set('elo', elo.players[i].losingRank);
+			}
+        }
 
 		// Increment play count
 		player.set('play_count', player.get('play_count') + 1);
@@ -287,9 +303,24 @@ gameController.prototype.end = function (complete) {
  */
 gameController.prototype.feelerPressed = function(data) {
     var positionId = data - 1;
-    this.feelers[positionId].emit('score');
-};
+    if(this.isReadyForRematch()) {
+        playersForRematch = this.getPlayersForRematch();
+        this.setPlayersForRematch([]);
 
+        console.log(chalk.green('starting rematch after some delay..'));
+        io.sockets.emit('player.rematch');
+        // has to happen after the game was fully ended as dashboard would be shown again
+        setTimeout(function() { 
+            async.eachSeries(playersForRematch, function (player, cb) {
+                console.log('for rematch adding player with id: '+player.id + ' name: ' + player.get('name'));
+                // async.eachSeries forces sequential adding of players so the fetch promise and its asynchronousness does not break the order of players
+                game.addPlayer(player.id, null, cb);
+            });
+        }, settings.winningViewDuration + 300);
+    } else { 
+        this.feelers[positionId].emit('score');
+    }
+};
 
 /**
  * The game is ready – two players have joined, but not yet started
@@ -659,4 +690,20 @@ gameController.prototype.updateStatus = function () {
  */
 gameController.prototype.clientJoined = function () {
 	stats.emit('client.join');
+};
+
+
+gameController.prototype.setPlayersForRematch = function (players) {
+	console.log('setting rematch players to'+[players]);
+	this.playersForRematch = players;
+};
+
+gameController.prototype.isReadyForRematch = function () {
+	console.log('ready for rematch=' + this.playersForRematch.length > 0);
+	return this.playersForRematch.length > 0;
+};
+
+gameController.prototype.getPlayersForRematch = function () {
+	console.log('players for rematch=' + [this.playersForRematch]);
+	return this.playersForRematch;
 };
