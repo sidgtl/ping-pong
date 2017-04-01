@@ -29,6 +29,7 @@ var
 	],
 
 	serve,
+	startingPlayer,
 	inProgress = false,
 	gameModel;
 
@@ -211,6 +212,7 @@ gameController.prototype.reset = function () {
 	this.score = [0, 0];
 	player.playing = [];
 	serve = undefined;
+	startingPlayer = undefined;
 	this.inProgress = false;
 	inProgress = false;
 	this.gameHistory = [];
@@ -528,6 +530,16 @@ gameController.prototype.checkWon = function () {
 
 };
 
+/**
+ * determines the next player given the inputs
+ * if in 3 player mode it will give you the "phantom" player with id=3
+**/
+gameController.prototype.getNextServer = function(players, lastServer, startingPlayer) {
+    // this calculation also covers the serving in a 3 players game, in this case the code we still have to assume it's a 4 players game
+    modifiedPlayerCount = (players.length + players.length%2);
+
+    return ( ( lastServer + (startingPlayer%2 == 0 ? 1 : -1) ) + modifiedPlayerCount ) % modifiedPlayerCount;
+}
 
 /**
  * Is it time to switch servers?
@@ -542,21 +554,22 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
         switchPreviousServer = (totalScore + 1) % settings.serverSwitchLimit === 0 && pointJustCancelled;
     
     if(switchServer || switchPreviousServer) {
-        
+  
         if(typeof forceServe !== 'undefined') {
-            serve = forceServe;
+            this.startingPlayer = serve = forceServe;
         } else if(this.score[0] > 0 || this.score[1] > 0) {
-            // this calculation also covers the serving in a 3 players game, in this case the code we still have to assume it's a 4 players game
-            modifiedPlayerCount = (players.length + players.length%2);
-            serve = ( ( serve - 1 ) + modifiedPlayerCount ) % modifiedPlayerCount;
+			serve = this.getNextServer(players, serve, this.startingPlayer);
             // A point was just cancelled, switch to previous server
             if(switchPreviousServer) {
                 serve = serve;
             }
         }
 
+		nextServer = this.getNextServer(players, serve, this.startingPlayer);
         // in a 3 players game serve can be the virtual 4th player, in this case we have to change it to the single player (seve = 1)
         realServe = serve >= players.length ? serve - 2 : serve;
+		realNextServer = nextServer >= players.length ? nextServer -2 : nextServer;
+
         this.gameHistory.unshift({
             action: 'switchServers',
             server: realServe,
@@ -564,7 +577,8 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
         });
 
         io.sockets.emit('game.switchServer', {
-            player: realServe
+            player: realServe,
+			nextServer: realNextServer
         });
         
     }

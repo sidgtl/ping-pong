@@ -60,7 +60,7 @@ var GameComponent = module.exports = React.createClass({
         node.socket.on('game.gamePoint', _this.gamePoint);
 
         node.socket.on('game.switchServer', function(data) {
-            _this.switchServer(data.player);
+            _this.switchServer(data.player, data.nextServer);
         });
 
         node.socket.on('feelers.disconnect', _this.tableDisconnected);
@@ -89,7 +89,7 @@ var GameComponent = module.exports = React.createClass({
     },
     
 
-    switchServer: function(player) {
+    switchServer: function(player, nextServer) {
 
         var
             _this = this,
@@ -97,6 +97,10 @@ var GameComponent = module.exports = React.createClass({
 
         this.setState({
             server: player
+        });
+        
+		this.setState({
+            nextServer: nextServer
         });
 
         playerSound = players[player].name;
@@ -178,7 +182,6 @@ var GameComponent = module.exports = React.createClass({
 
         setTimeout(function() {
             //_this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
-			console.log(data.winner);
 			_this.queueSound(data.winner % 2 == 0 ? 'blue-team-dominating' : 'red-team-dominating');
         }, 900);
     },
@@ -297,8 +300,8 @@ var GameComponent = module.exports = React.createClass({
             <div>
                 <AdminComponent active='0' />
                 <div className='player_container'>
-                    <PlayerComponent positionId='0' players={players} server={this.state.server} winner={this.state.winner} />
-                    <PlayerComponent positionId='1' players={players} server={this.state.server} winner={this.state.winner} />
+                    <PlayerComponent positionId='0' players={players} server={this.state.server} winner={this.state.winner} nextServer={this.state.nextServer} />
+                    <PlayerComponent positionId='1' players={players} server={this.state.server} winner={this.state.winner} nextServer={this.state.nextServer} />
                     <StatusComponent main='true' />
                 </div>
                 <StatsComponent players={players} server={this.state.server} score={this.state.score} />
