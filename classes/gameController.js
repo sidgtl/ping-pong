@@ -143,17 +143,19 @@ gameController.prototype.addPlayer = function(playerID, custom, cb) {
     // Load the model for the added player
     Player.where(attr, value).fetch().then(function(player) {
         
-        if(!player) {
-            console.log(chalk.red('Player ' + value + ' not found'));
-            io.sockets.emit('game.playerNotFound', {
-                attr: attr,
-                value: value
-            });
-            cb();
-            return;
+        newbie = null;
+    	if(!player) {
+				console.log(chalk.red('Newbie ' + value + ' wants to start a game'));
+
+				new Player({rfid: value, name: first_set_random_names.randomElement() + ' ' + second_set_random_names.randomElement(), gender: 'male'}).save().then(function (newbie) {
+					player = newbie;
+					console.log(JSON.stringify(newbie));
+				});
+
+				//return;
         }
 
-        if(players.length >= settings.maxPlayers) {
+		if(players.length >= settings.maxPlayers) {
             // maxPlayers+1 player joined, prompting the game to be reset
             console.log(chalk.yellow('A ' + (settings.maxPlayers + 1) + '. player joined, resetting the game'));
             cb();
