@@ -138,11 +138,18 @@ var GameComponent = module.exports = React.createClass({
 
         var
             player = data.player,
-            playerSound;
+            playerSound,
+	    _this = this;
 
-        playerSound = players[player].name;
 
-        this.queueSound('game-point-' + slug(playerSound.toLowerCase()));
+	// delayed so it happens after the score announcements
+	setTimeout(function() {
+		// if winner is clear already don't say game point again
+		if(typeof _this.state.winner === 'undefined') {
+        		playerSound = players[player].name;
+	        	_this.queueSound('game-point-' + slug(playerSound.toLowerCase()));
+		}
+	}, 600);
     },
 
 
