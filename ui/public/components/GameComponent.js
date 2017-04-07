@@ -85,7 +85,7 @@ var GameComponent = module.exports = React.createClass({
 
 
     rematch: function() {
-		this.queueSound('proceed');
+		//this.queueSound('proceed');
     },
     
 
