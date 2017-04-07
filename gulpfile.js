@@ -195,8 +195,8 @@ function getTTS(phrase, language, cb) {
     language = language || 'en-us';
 
     var
-	requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
-        fileName = slug(phrase).toLowerCase() + '.mp3',
+	requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&c=wav&src=' + phrase,
+        fileName = slug(phrase).toLowerCase() + '.wav',
         filePath = path.join('./ui/public/sounds/', fileName),
         res = true;
 

@@ -219,7 +219,7 @@ var GameComponent = module.exports = React.createClass({
 
             if(soundQueue.length > 0) {
                 sound = soundQueue.shift();
-				var audio = new Audio(soundPath + sound.name + ".mp3");
+				var audio = new Audio(soundPath + sound.name + ".wav");
 				audio.addEventListener('loadedmetadata', function() {
 	                var duration = audio.duration;
 	                offset = sound.offsetNext ? duration*1000 + sound.offsetNext : duration*1000;

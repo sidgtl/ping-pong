@@ -125,8 +125,8 @@ function getTTS(phrase, language, cb) {
     language = language || 'en-gb';
 
     var
-        requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
-        fileName = slug(phrase).toLowerCase() + '.mp3',
+        requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&c=wav&src=' + phrase,
+        fileName = slug(phrase).toLowerCase() + '.wav',
         filePath = path.join('./ui/public/sounds/', fileName),
         res = true;
 
@@ -136,7 +136,7 @@ function getTTS(phrase, language, cb) {
             res = request(requestURL);
             res.on('response', function(response) {
                 gutil.log("downloaded "+requestURL+", status code=" + response.statusCode + " content-type: " + response.headers['content-type'] + " length:" + response.headers['content-length'])
-                if(response.headers['content-type'] == "audio/mpeg" && response.headers['content-length'] > 0) {
+                if(response.headers['content-type'] == "audio/wav" && response.headers['content-length'] > 0) {
                     response.pipe(fs.createWriteStream(filePath));
                 } else {
                     gutil.log("problem, see above, not saving it");
