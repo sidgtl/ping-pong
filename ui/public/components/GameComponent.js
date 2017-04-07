@@ -17,9 +17,14 @@ var
     soundPath = '/sounds/',
     PlayerModel,
     playerProps,
+<<<<<<< HEAD
+    players = [];
+
+=======
 	soundQueue = [],
 	soundsPlaying = false,
     players = [];
+>>>>>>> raspberry
 
 // The beginnings of a model for sharing state between components
 playerProps = {
@@ -54,6 +59,11 @@ var GameComponent = module.exports = React.createClass({
 
         var _this = this;
 
+<<<<<<< HEAD
+        sounds = new Howl(soundSprite);
+
+=======
+>>>>>>> raspberry
         node.socket.on('game.end', _this.end);
         node.socket.on('game.score', _this.score);
         node.socket.on('game.reset', _this.reset);
@@ -91,6 +101,11 @@ var GameComponent = module.exports = React.createClass({
         });
 
         playerSound = players[player].name;
+<<<<<<< HEAD
+
+        this.queueSound(playerSound.toLowerCase() + '-to-serve');
+=======
+>>>>>>> raspberry
 
 		// cut down the delay between "player X to serve" and the score announcement by 500 ms
 		this.queueSound(slug(playerSound.toLowerCase()) + '-to-serve', -500);
@@ -134,7 +149,12 @@ var GameComponent = module.exports = React.createClass({
             playerSound = player1.name;
         }
 
+<<<<<<< HEAD
+        this.queueSound('game-point-' + playerSound.toLowerCase());
+
+=======
         this.queueSound('game-point-' + slug(playerSound.toLowerCase()));
+>>>>>>> raspberry
     },
 
 
@@ -142,8 +162,12 @@ var GameComponent = module.exports = React.createClass({
     announceScore: function() {
 
         var announcement = this.state.score;
+<<<<<<< HEAD
+
+=======
 		var _this = this;
         
+>>>>>>> raspberry
         if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
 
             // Announce the server's score first
@@ -151,9 +175,15 @@ var GameComponent = module.exports = React.createClass({
                 announcement.reverse();
             }
 
+<<<<<<< HEAD
+            this.queueSound('' + announcement[0], -300);
+            this.queueSound('' + announcement[1]);
+
+=======
 			// cut down the delay between the score announcements of the two sides
 			this.queueSound('' + announcement[0], -500);
 			this.queueSound('' + announcement[1]);
+>>>>>>> raspberry
         }
 
     },
@@ -165,8 +195,12 @@ var GameComponent = module.exports = React.createClass({
         var
             _this = this,
             playerSound = '';
+<<<<<<< HEAD
+
+=======
         
 		this.resetQueue();
+>>>>>>> raspberry
         this.setState({ winner: data.winner });
 
         if(data.winner == 0) {
@@ -176,12 +210,66 @@ var GameComponent = module.exports = React.createClass({
         if(data.winner == 1) {
             playerSound = player1.name;
         }
+<<<<<<< HEAD
+
+        this.clearAudioQueue();
+        sounds.play('game_end');
+=======
         
         this.queueSound('game_end');
+>>>>>>> raspberry
 
         setTimeout(function() {
             _this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
         }, 900);
+<<<<<<< HEAD
+
+    },
+
+
+
+    tableConnected: function() {
+        this.setState({
+            table: true
+        });
+    },
+
+
+
+    tableDisconnected: function() {
+        this.setState({
+            table: false
+        });
+    },
+
+
+
+    cardReaderConnected: function() {
+        this.setState({
+            cardReader: true
+        });
+    },
+
+
+
+    cardReaderDisconnected: function() {
+        this.setState({
+            cardReader: false
+        });
+    },
+
+
+
+    tableBatteryLow: function() {
+        this.setState({
+            table: 'warning'
+        });
+    },
+
+
+
+    queueSound: function(sound, offset, cb) {
+=======
     },
 
 	resetQueue: function() {
@@ -189,6 +277,7 @@ var GameComponent = module.exports = React.createClass({
 	},
 	
 	queueSound: function(sound, offset, cb) {
+>>>>>>> raspberry
         soundQueue.push({
             name: sound,
             offsetNext: typeof offset === 'undefined' ? 0 : offset,
@@ -197,6 +286,11 @@ var GameComponent = module.exports = React.createClass({
         this.playQueue();
     },
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> raspberry
     playQueue: function() {
 
         var
@@ -241,10 +335,17 @@ var GameComponent = module.exports = React.createClass({
 
     },
 
+<<<<<<< HEAD
+
+
+    clearAudioQueue: function() {
+        soundQueue = [];
+=======
     tableConnected: function() {
         this.setState({
             table: true
         });
+>>>>>>> raspberry
     },
 
 
@@ -311,4 +412,10 @@ var GameComponent = module.exports = React.createClass({
         );
     }
 
+<<<<<<< HEAD
+
+
 });
+=======
+});
+>>>>>>> raspberry

@@ -166,7 +166,12 @@ gulp.task('sounds', function(cb) {
                 };
 
             async.whilst(incomplete, function(cb) {
+<<<<<<< HEAD
+                i ++;
+                getTTS(i, 'en-us', function(res) {
+=======
                 getTTS(i, 'en-US', function(res) {
+>>>>>>> raspberry
                     if(res.writable) {
 						gutil.log("pushing tts of " + i + " to download queue");
                         downloads.push(res);
@@ -182,7 +187,11 @@ gulp.task('sounds', function(cb) {
     function fetchAnnouncements(player, cb) {
         async.each(announcements, function(announcement, cb) {
             announcement = announcement(player);
+<<<<<<< HEAD
+            getTTS(announcement, 'en-us', cb);
+=======
             getTTS(announcement, 'en-US', cb);
+>>>>>>> raspberry
         }, cb);
     }
     
@@ -195,7 +204,11 @@ function getTTS(phrase, language, cb) {
     language = language || 'en-us';
 
     var
+<<<<<<< HEAD
+		requestURL = 'http://api.voicerss.org/?key=33661942924e4256851b0145cb93ec3a&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
+=======
 	requestURL = 'http://api.voicerss.org/?key=9b6c5034dfc14589807fa9969d7ecea4&hl=' + language + '&f=16khz_16bit_stereo&src=' + phrase,
+>>>>>>> raspberry
         fileName = slug(phrase).toLowerCase() + '.mp3',
         filePath = path.join('./ui/public/sounds/', fileName),
         res = true;
