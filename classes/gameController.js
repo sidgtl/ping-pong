@@ -143,57 +143,61 @@ gameController.prototype.addPlayer = function(playerID, custom, cb) {
     // Load the model for the added player
     Player.where(attr, value).fetch().then(function(player) {
         
-        newbie = null;
-    	if(!player) {
+        if(!player) {
 				console.log(chalk.red('Newbie ' + value + ' wants to start a game'));
 
 				new Player({rfid: value, name: first_set_random_names.randomElement() + ' ' + second_set_random_names.randomElement(), gender: 'male'}).save().then(function (newbie) {
-					player = newbie;
 					console.log(JSON.stringify(newbie));
+					this.manageIncomingPlayer(newbie, cb);
 				});
 
-				//return;
+				return;
         }
+		this.manageIncomingPlayer(player, cb);
 
-		if(players.length >= settings.maxPlayers) {
-            // maxPlayers+1 player joined, prompting the game to be reset
-            console.log(chalk.yellow('A ' + (settings.maxPlayers + 1) + '. player joined, resetting the game'));
-            cb();
-            return game.end(false);
-        }
-        
-        if(game.playerInGame(player.id)) {
-            console.log(chalk.red(player.get('name') + ' is already in the game!'));
-            cb();
-            return;
-        } 
-        
-        players.push(player);
-        position = players.indexOf(player);
-        elo.addPlayer(player, position);
-        
-        console.log(chalk.green('Player added: ' + player.get('name'))+' at position:'+position);
-
-        if(players.length === settings.minPlayers) {
-          console.log("game ready!\n");
-          game.ready();
-        }
-        
-        // Notify the client a player has joined
-        io.sockets.emit('player.join', {
-            player: player.toJSON(),
-            position: players.indexOf(player)
-        });
-        
-        io.sockets.emit('leaderboard.hide');
-        
-        cb();
     });
     
 };
 
 Array.prototype.randomElement = function () {
 	return this[Math.floor(Math.random() * this.length)]
+};
+
+gameController.prototype.manageIncomingPlayer = function(player, cb) {
+
+	if(players.length >= settings.maxPlayers) {
+		// maxPlayers+1 player joined, prompting the game to be reset
+		console.log(chalk.yellow('A ' + (settings.maxPlayers + 1) + '. player joined, resetting the game'));
+		cb();
+		return game.end(false);
+	}
+
+	if(game.playerInGame(player.id)) {
+		console.log(chalk.red(player.get('name') + ' is already in the game!'));
+		cb();
+		return;
+	}
+
+	players.push(player);
+	position = players.indexOf(player);
+	elo.addPlayer(player, position);
+
+	console.log(chalk.green('Player added: ' + player.get('name'))+' at position:'+position);
+
+	if(players.length === settings.minPlayers) {
+		console.log("game ready!\n");
+		game.ready();
+	}
+
+	// Notify the client a player has joined
+	io.sockets.emit('player.join', {
+		player: player.toJSON(),
+		position: players.indexOf(player)
+	});
+
+	io.sockets.emit('leaderboard.hide');
+
+	cb();
 };
 
 
