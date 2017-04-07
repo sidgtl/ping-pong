@@ -134,7 +134,8 @@ gameController.prototype.addPlayer = function(playerID, custom, cb) {
     var
         attr = playerID !== null ? 'id' : custom.attr,
         value = playerID !== null ? playerID : custom.value,
-        position;
+        position,
+	_this = this;
 
     if(typeof cb === 'undefined') {
         cb = function() {};
@@ -148,12 +149,12 @@ gameController.prototype.addPlayer = function(playerID, custom, cb) {
 
 				new Player({rfid: value, name: first_set_random_names.randomElement() + ' ' + second_set_random_names.randomElement(), gender: 'male'}).save().then(function (newbie) {
 					console.log(JSON.stringify(newbie));
-					this.manageIncomingPlayer(newbie, cb);
+					_this.manageIncomingPlayer(newbie, cb);
 				});
 
 				return;
         }
-		this.manageIncomingPlayer(player, cb);
+		_this.manageIncomingPlayer(player, cb);
 
     });
     
