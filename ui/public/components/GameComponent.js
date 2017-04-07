@@ -119,12 +119,13 @@ var GameComponent = module.exports = React.createClass({
             score: data.gameScore
         });
 
+//	this.queueSound('scored');
+
         // This is really counterintuitive, and far from a permanent
         // solution. This small delay allows us to cancel the score
         // announcement. For example, when a service change occurs,
         // we want to defer the score announcement to after the
         // service change announcement.
-		this.queueSound('scored');
         setTimeout(function() {
             _this.announceScore();
         }, 500);
