@@ -72,11 +72,6 @@ io.sockets.on('connection', function(client) {
     game.clientJoined();
     cardReader.connectionStatus();
     client.on('fakeScored', game.feelerPressed); // Fake score event for easier testing
-    
-    // test
-    //game.addPlayerByRfid(123);
-    //game.addPlayerByRfid(124);
-    //game.feelerPressed;
 });
 
 //core.on('scored', game.feelerPressed);

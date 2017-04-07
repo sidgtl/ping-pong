@@ -17,14 +17,9 @@ var
     soundPath = '/sounds/',
     PlayerModel,
     playerProps,
-<<<<<<< HEAD
-    players = [];
-
-=======
 	soundQueue = [],
 	soundsPlaying = false,
     players = [];
->>>>>>> raspberry
 
 // The beginnings of a model for sharing state between components
 playerProps = {
@@ -59,18 +54,13 @@ var GameComponent = module.exports = React.createClass({
 
         var _this = this;
 
-<<<<<<< HEAD
-        sounds = new Howl(soundSprite);
-
-=======
->>>>>>> raspberry
         node.socket.on('game.end', _this.end);
         node.socket.on('game.score', _this.score);
         node.socket.on('game.reset', _this.reset);
         node.socket.on('game.gamePoint', _this.gamePoint);
 
         node.socket.on('game.switchServer', function(data) {
-            _this.switchServer(data.player);
+            _this.switchServer(data.player, data.nextServer);
         });
 
         node.socket.on('feelers.disconnect', _this.tableDisconnected);
@@ -86,11 +76,20 @@ var GameComponent = module.exports = React.createClass({
 			players[data.position].set(data.player);
         });
 
+        node.socket.on('player.rematch', function() {
+			console.log('received rematch event');	
+            _this.rematch();
+        });
+
     },
 
 
+    rematch: function() {
+		this.queueSound('proceed');
+    },
+    
 
-    switchServer: function(player) {
+    switchServer: function(player, nextServer) {
 
         var
             _this = this,
@@ -99,13 +98,12 @@ var GameComponent = module.exports = React.createClass({
         this.setState({
             server: player
         });
+        
+		this.setState({
+            nextServer: nextServer
+        });
 
         playerSound = players[player].name;
-<<<<<<< HEAD
-
-        this.queueSound(playerSound.toLowerCase() + '-to-serve');
-=======
->>>>>>> raspberry
 
 		// cut down the delay between "player X to serve" and the score announcement by 500 ms
 		this.queueSound(slug(playerSound.toLowerCase()) + '-to-serve', -500);
@@ -141,20 +139,9 @@ var GameComponent = module.exports = React.createClass({
             player = data.player,
             playerSound;
 
-        if(player == 0) {
-            playerSound = player0.name;
-        }
+        playerSound = players[player].name;
 
-        if(player == 1) {
-            playerSound = player1.name;
-        }
-
-<<<<<<< HEAD
-        this.queueSound('game-point-' + playerSound.toLowerCase());
-
-=======
         this.queueSound('game-point-' + slug(playerSound.toLowerCase()));
->>>>>>> raspberry
     },
 
 
@@ -162,12 +149,8 @@ var GameComponent = module.exports = React.createClass({
     announceScore: function() {
 
         var announcement = this.state.score;
-<<<<<<< HEAD
-
-=======
 		var _this = this;
         
->>>>>>> raspberry
         if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
 
             // Announce the server's score first
@@ -175,15 +158,9 @@ var GameComponent = module.exports = React.createClass({
                 announcement.reverse();
             }
 
-<<<<<<< HEAD
-            this.queueSound('' + announcement[0], -300);
-            this.queueSound('' + announcement[1]);
-
-=======
 			// cut down the delay between the score announcements of the two sides
 			this.queueSound('' + announcement[0], -500);
 			this.queueSound('' + announcement[1]);
->>>>>>> raspberry
         }
 
     },
@@ -195,81 +172,18 @@ var GameComponent = module.exports = React.createClass({
         var
             _this = this,
             playerSound = '';
-<<<<<<< HEAD
-
-=======
         
 		this.resetQueue();
->>>>>>> raspberry
         this.setState({ winner: data.winner });
 
-        if(data.winner == 0) {
-            playerSound = player0.name;
-        }
-
-        if(data.winner == 1) {
-            playerSound = player1.name;
-        }
-<<<<<<< HEAD
-
-        this.clearAudioQueue();
-        sounds.play('game_end');
-=======
+		playerSound = players[data.winner].name;
         
         this.queueSound('game_end');
->>>>>>> raspberry
 
         setTimeout(function() {
-            _this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
+            //_this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
+			_this.queueSound(data.winner % 2 == 0 ? 'blue-team-dominating' : 'red-team-dominating');
         }, 900);
-<<<<<<< HEAD
-
-    },
-
-
-
-    tableConnected: function() {
-        this.setState({
-            table: true
-        });
-    },
-
-
-
-    tableDisconnected: function() {
-        this.setState({
-            table: false
-        });
-    },
-
-
-
-    cardReaderConnected: function() {
-        this.setState({
-            cardReader: true
-        });
-    },
-
-
-
-    cardReaderDisconnected: function() {
-        this.setState({
-            cardReader: false
-        });
-    },
-
-
-
-    tableBatteryLow: function() {
-        this.setState({
-            table: 'warning'
-        });
-    },
-
-
-
-    queueSound: function(sound, offset, cb) {
-=======
     },
 
 	resetQueue: function() {
@@ -277,7 +191,6 @@ var GameComponent = module.exports = React.createClass({
 	},
 	
 	queueSound: function(sound, offset, cb) {
->>>>>>> raspberry
         soundQueue.push({
             name: sound,
             offsetNext: typeof offset === 'undefined' ? 0 : offset,
@@ -286,11 +199,6 @@ var GameComponent = module.exports = React.createClass({
         this.playQueue();
     },
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> raspberry
     playQueue: function() {
 
         var
@@ -335,17 +243,10 @@ var GameComponent = module.exports = React.createClass({
 
     },
 
-<<<<<<< HEAD
-
-
-    clearAudioQueue: function() {
-        soundQueue = [];
-=======
     tableConnected: function() {
         this.setState({
             table: true
         });
->>>>>>> raspberry
     },
 
 
@@ -399,8 +300,8 @@ var GameComponent = module.exports = React.createClass({
             <div>
                 <AdminComponent active='0' />
                 <div className='player_container'>
-                    <PlayerComponent positionId='0' players={players} server={this.state.server} winner={this.state.winner} />
-                    <PlayerComponent positionId='1' players={players} server={this.state.server} winner={this.state.winner} />
+                    <PlayerComponent positionId='0' players={players} server={this.state.server} winner={this.state.winner} nextServer={this.state.nextServer} />
+                    <PlayerComponent positionId='1' players={players} server={this.state.server} winner={this.state.winner} nextServer={this.state.nextServer} />
                     <StatusComponent main='true' />
                 </div>
                 <StatsComponent players={players} server={this.state.server} score={this.state.score} />
@@ -412,10 +313,4 @@ var GameComponent = module.exports = React.createClass({
         );
     }
 
-<<<<<<< HEAD
-
-
 });
-=======
-});
->>>>>>> raspberry
