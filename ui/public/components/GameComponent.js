@@ -159,8 +159,7 @@ var GameComponent = module.exports = React.createClass({
         var announcement = this.state.score;
 		var _this = this;
         
-        if(typeof this.state.winner === 'undefined' && announcement[0] > 0 || announcement[1] > 0) {
-
+        if(typeof this.state.winner === 'undefined' && (announcement[0] > 0 || announcement[1] > 0) ) {
             // Announce the server's score first
             if(this.state.server == 1) {
                 announcement.reverse();
