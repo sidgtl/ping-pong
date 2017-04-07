@@ -137,13 +137,50 @@ gameController.prototype.addPlayer = function(playerID, custom) {
     Player.where(attr, value).fetch().then(function(player) {
         
         if(!player) {
-            console.log(chalk.red('Player ' + value + ' not found'));
-            io.sockets.emit('game.playerNotFound', {
-                attr: attr,
-                value: value
-            });
-            return;
-        }
+				console.log(chalk.red('Newbie ' + value + ' wants to start a game'));
+
+				new Player({rfid: value, name: first_set_random_names.randomElement() + ' ' + second_set_random_names.randomElement(), gender: 'male'}).save().then(function (newbie) {
+				console.log(JSON.stringify(newbie));
+
+				if (players.length === settings.maxPlayers) {
+					// A third player joined, prompting the game to be reset
+					console.log(chalk.yellow('A third player joined, resetting the game'));
+					return game.end(false);
+				}
+
+				if (game.playerInGame(newbie.id)) {
+					console.log(chalk.red(newbie.get('name') + ' is already in the game!'));
+					return;
+				}
+
+				console.log(chalk.green('Player added: ' + newbie.get('name')));
+
+				players.push(newbie);
+				position = players.indexOf(newbie);
+				elo.addPlayer(newbie, position);
+
+				if (players.length === settings.minPlayers) {
+					console.log("game ready!\n");
+					game.ready();
+				}
+
+				// Notify the client a player has joined
+				io.sockets.emit('player' + position + '.join', {
+					player: newbie.toJSON(),
+					position: players.indexOf(newbie)
+				});
+
+				io.sockets.emit('player.join', {
+					player: newbie.toJSON(),
+					position: players.indexOf(newbie)
+				});
+
+				io.sockets.emit('leaderboard.hide');
+			});
+
+
+				return;
+		}
 
         if(players.length > settings.maxPlayers) {
             // maxPlayers+1 player joined, prompting the game to be reset
