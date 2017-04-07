@@ -180,24 +180,20 @@ var GameComponent = module.exports = React.createClass({
             _this = this,
             playerSound = '';
         
-		this.resetQueue();
+	this.resetQueue();
+
         this.setState({ winner: data.winner });
 
-		playerSound = players[data.winner].name;
-        
         this.queueSound('game_end');
 
-        setTimeout(function() {
-            //_this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
-			_this.queueSound(data.winner % 2 == 0 ? 'blue-team-dominating' : 'red-team-dominating');
-        }, 900);
+	this.queueSound(data.winner % 2 == 0 ? 'blue-team-dominating' : 'red-team-dominating');
     },
 
-	resetQueue: function() {
+    resetQueue: function() {
 		soundQueue = [];
 	},
 	
-	queueSound: function(sound, offset, cb) {
+    queueSound: function(sound, offset, cb) {
         soundQueue.push({
             name: sound,
             offsetNext: typeof offset === 'undefined' ? 0 : offset,
