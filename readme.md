@@ -12,24 +12,8 @@ We hacked our Ping Pong table! [Read the blog post.](http://sidigital.co/blog/la
 Gulp is used to build the client. From the project root, run `npm install` and `gulp` to build.
 The default Gulp task will build and then start watching.
 
-### Sounds
-[Audiosprite](https://github.com/tonistiigi/audiosprite) is used to build the sound sprite.
-You'll first need to install Audiosprite:
-
-    npm install -g audiosprite
-    brew install ffmpeg --with-theora --with-libogg --with-libvorbis
-
-Then run `gulp sounds` from the project root to rebuild the sprite. This will:
-
-- Fetch audio announcements for all players from Google's unofficial TTS API
-- Fetch point announcements for scores 0–40 from Google's unofficial TTS API
-- Include any .mp3 or .wav files in the `ui/public/sounds` directory
-- Rebuild the JSON file that contains the audio data required to play the individual sounds
-
-`gulp sounds` depends on a DB connection in order to get the player list. You may need to specify the environment to use, for example:
-    NODE_ENV=development gulp sounds
-
-Remember to rebuild the frontend after regenerating the sounds in order to include the updated sprite JSON in the Browserify build.
+## Python requirements
+For calculating the player's skill level we use Microsoft's trueSkill algorithm. To use it in the project make sure you install python-dev and the following python packages: trueskill, sqlalchemy, mysql-python. You can get them easily using pip. You also needt the mysql\_config command. For linux debianoid distros you get them from package libmysqlclient-dev. For the interface python&lt;-&rt;nodejs we use python-shell which is pulled in by npm's package.json
 
 ## Todo
 - General restructuring and refactoring (v1 – new architecture, tidy events, move game logic client-side)

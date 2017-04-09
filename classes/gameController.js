@@ -3,7 +3,7 @@ var
     async = require('async'),
 	debounce = require('debounce'),
 	app = require('../app'),
-	elo = require('./eloComparator')(),
+	trueskill = require('./trueskillController')(),
 	settings = app.get('settings'),
 	Feeler = require('./feelerController'),
 	Game = require('../models/Game'),
@@ -181,7 +181,7 @@ gameController.prototype.manageIncomingPlayer = function(player, cb) {
 
 	players.push(player);
 	position = players.indexOf(player);
-	elo.addPlayer(player, position);
+	//elo.addPlayer(player, position);
 
 	console.log(chalk.green('Player added: ' + player.get('name'))+' at position:'+position);
 
@@ -223,7 +223,7 @@ gameController.prototype.reset = function () {
 	this.inProgress = false;
 	inProgress = false;
 	this.gameHistory = [];
-	elo.reset();
+	//elo.reset();
 	this.updateStatus();
 };
 
@@ -246,11 +246,11 @@ gameController.prototype.end = function (complete) {
 	}
 
 
-	if (winningPlayer - 1 === 0) {
+	/*if (winningPlayer - 1 === 0) {
 		updatedRanks = [elo.players[0].winningLeaderboardRank, elo.players[1].losingLeaderboardRank];
 	} else {
 		updatedRanks = [elo.players[0].losingLeaderboardRank, elo.players[1].winningLeaderboardRank];
-	}
+	}*/
 
 	io.sockets.emit('game.message', {
 		message: '<span class="player-0">' + players[0].get('name') + '</span> is now rank ' + updatedRanks[0] + ', <span class="player-1">' + players[1].get('name') + '</span> is rank ' + updatedRanks[1]
@@ -280,27 +280,18 @@ gameController.prototype.end = function (complete) {
 			_this.reset();
 		});
 
+	trueskill.submitMatch(players, winningPlayer);
+
 	players.forEach(function (player, i) {
-        console.log('writing elo for player: ' + player.id + " winningPlayer=" + winningPlayer);
-        // elo only supports two players
-        if (i < 2)
-        {
-			if (i === winningPlayer - 1) {
-				player.set('elo', elo.players[i].winningRank);
-			} else {
-				player.set('elo', elo.players[i].losingRank);
-			}
-        }
+        console.log('writing trueskill for player: ' + player.id + " winningPlayer=" + winningPlayer);
 
 		// Increment play count
 		player.set('play_count', player.get('play_count') + 1);
-
 		player.save();
 
 	});
 
 	console.log(chalk.green('Game ending, ' + players[winningPlayer - 1].get('name') + ' won'));
-
 };
 
 
@@ -344,7 +335,7 @@ gameController.prototype.ready = function () {
 	});
 
 	leaderboard.get().then(function (leaderboard) {
-		elo.setLeaderboard(leaderboard);
+		//elo.setLeaderboard(leaderboard);
 	});
 
 	// Find the last game between the players
