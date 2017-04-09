@@ -77,6 +77,7 @@ function gameController() {
 		io.sockets.emit('stats.mostFrequentPlayer', player);
 	});
 
+	/** first needs 4 players support
 	elo.on('tip.playerWin', function (player) {
 
 		var
@@ -95,6 +96,7 @@ function gameController() {
 		});
 
 	});
+	 */
 
 }
 
@@ -253,14 +255,17 @@ gameController.prototype.end = function (complete) {
 	}*/
 
 	io.sockets.emit('game.message', {
-		message: '<span class="player-0">' + players[0].get('name') + '</span> is now rank ' + updatedRanks[0] + ', <span class="player-1">' + players[1].get('name') + '</span> is rank ' + updatedRanks[1]
+		// first need 4 players support
+		// message: '<span class="player-0">' + players[0].get('name') + '</span> is now rank ' + updatedRanks[0] + ', <span class="player-1">' + players[1].get('name') + '</span> is rank ' + updatedRanks[1]
+		message: ''
 	});
 
 	io.sockets.emit('game.end', {
 		winner: winningPlayer - 1
 	});
 
-	this.setPlayersForRematch(players.reverse());
+	// use slice to get a copy of array and don't change it itself
+	this.setPlayersForRematch(players.slice().reverse());
 	setTimeout(function () {
 		_this.setPlayersForRematch([]);
 		io.sockets.emit('game.reset');

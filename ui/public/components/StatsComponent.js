@@ -213,6 +213,8 @@ var StatsComponent = module.exports = React.createClass({
             }
             
             headToHead = (
+                <div></div>
+                    /** first support 4 players
                 <div className="stats__component" key="head-to-head">
                     <span className="header stats__title">Head To Head</span>
                     <div className="stat_score">
@@ -224,7 +226,7 @@ var StatsComponent = module.exports = React.createClass({
                         {headToHeadScore[1]}
                         <span className="stat_score_player">{this.props.players[1].name}</span>
                     </div>
-                </div>
+                </div>*/
             );
             
         }
@@ -251,28 +253,36 @@ var StatsComponent = module.exports = React.createClass({
             
             if(typeof this.state.biggestWinningStreak !== 'undefined') {
                 biggestWinningStreak = (
+                    <div></div>
+                    /** first needs 4 player support
                     <div className="stats__component stats__component--bordered" key="biggest-winning-streak">
                         <span className="header stats__title">Biggest Winning Streak</span>
                         <div className="stat_score">{this.state.biggestWinningStreak.player}</div>
                         <div className="stat_dash">-</div>
                         <div className="stat_score">{this.state.biggestWinningStreak.streak}</div>
                     </div>
+                    */
                 );
             }
             
             if(typeof this.state.mostConsecutiveLosses !== 'undefined') {
                 mostConsecutiveLosses = (
+                    <div></div>
+                    /** first needs 4 player support
                     <div className="stats__component stats__component--bordered" key="most-consecutive-losses">
                         <span className="header stats__title">Most Consecutive Losses</span>
                         <div className="stat_score">{this.state.mostConsecutiveLosses.player}</div>
                         <div className="stat_dash">-</div>
                         <div className="stat_score">{this.state.mostConsecutiveLosses.streak}</div>
                     </div>
+                    */
                 );
             }
             
             if(typeof this.state.largestWhooping !== 'undefined') {
                 largestWhooping = (
+                    <div></div>
+                    /** first needs 4 player support
                     <div className="stats__component stats__component--bordered" key="largest-whooping">
                         <span className="header stats__title">Largest Whooping</span>
                         <div className="stat_score">
@@ -285,6 +295,7 @@ var StatsComponent = module.exports = React.createClass({
                             <span className="stat_score_player">{this.state.largestWhooping.players[1]}</span>
                         </div>
                     </div>
+                    */
                 );
             }
             
