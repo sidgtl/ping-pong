@@ -285,9 +285,7 @@ var GameComponent = module.exports = React.createClass({
     reset: function() {
 
         setTimeout(function() {
-            for(var prop in playerProps) {
-                players.map(function(v) {v.unset(prop);});
-            }
+            players = [];
         }, 1500);
 
         this.replaceState(this.getInitialState());
