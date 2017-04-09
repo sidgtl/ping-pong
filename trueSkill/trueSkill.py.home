@@ -37,7 +37,7 @@ def setTeamRatings(team, ratings):
             updateRating(playerId = team[i],rating = ratings[i])
     return
 
-#expecting a comma separated string of playerids for each team parameter, winningTeam := [1,2 ]
+#expecting a comma separated string of playerids for each team parameter, winningTeam := [1,2]
 def submitMatchResult(team1,team2,winningTeam):
     #get rating of all players
     t1 = team1.split(",")

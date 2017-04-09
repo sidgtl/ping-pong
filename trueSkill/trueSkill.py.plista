@@ -20,7 +20,6 @@ def getRating(playerId):
 
 def updateRating(playerId,rating):
     statement = "UPDATE players SET trueSkill_mu = '"+str(rating.mu)+"', trueSkill_sigma = '"+str(rating.sigma)+"' WHERE id = '"+str(playerId)+"'"
-    print(statement)
     exe_my_sql_query(statement)
     return
 
@@ -37,7 +36,7 @@ def setTeamRatings(team, ratings):
             updateRating(playerId = team[i],rating = ratings[i])
     return
 
-#expecting a comma separated string of playerids for each team parameter
+#expecting a comma separated string of playerids for each team parameter, winningTeam := [1,2]
 def submitMatchResult(team1,team2,winningTeam):
     #get rating of all players
     t1 = team1.split(",")
@@ -47,7 +46,7 @@ def submitMatchResult(team1,team2,winningTeam):
     t2_ratings = getTeamRatings(t2)
 
     #update rating using results of this match
-    if(winningTeam==1):
+    if(int(winningTeam)==1):
         matchResult=[0,1]
     else:
         matchResult=[1,0]
