@@ -173,7 +173,13 @@ var PlayerComponent = module.exports = React.createClass({
         this.replaceState(this.getInitialState());
     },
     
-    
+    getPlayerOrder: function(a, b, _this) {
+        return (!( typeof _this.props.server !== 'undefined' && typeof _this.props.nextServer !== 'undefined') ||
+        ( typeof _this.props.server !== 'undefined' && typeof _this.props.nextServer !== 'undefined'
+            && _this.props.players[_this.props.nextServer].name != a.name && _this.props.players[_this.props.server].name
+            != a.name
+        )) ? -1 : 1;
+    },
     
     render: function() {
 
@@ -189,11 +195,33 @@ var PlayerComponent = module.exports = React.createClass({
             winner;
 
         if(!this.state.name && typeof this.props.players[this.props.positionId] !== 'undefined' && this.props.players[this.props.positionId].image) {
-            style = { 'background-image': 'url(img/players/' + this.props.players[this.props.positionId].image + ')' };
+            style = {
+                'background-image':
+                    this.props.players
+                        .filter(function(v,i) {return i%2 == _this.props.positionId })
+                        .sort(function(a,v) { return _this.getPlayerOrder(a, v, _this); })
+                        .map(function(v) { return 'url(img/players/' + v.image + ')'; })
+                        .join(', '),
+                'background-position':
+                    this.props.players
+                        .filter(function(v,i) {return i%2 == _this.props.positionId })
+                        .length > 1 ? 'bottom left, bottom right' : ''
+            }
         }
 
 		if(this.state.win) {
-			style = { 'background-image': 'url(img/players/win/' + this.props.players[this.props.positionId].image + ')' };
+            style = {
+                'background-image':
+                    this.props.players
+                        .filter(function(v,i) {return i%2 == _this.props.positionId })
+                        .sort(function(a,v) { return _this.getPlayerOrder(a, v, _this); })
+                        .map(function(v) { return 'url(img/players/win/' + v.image + ')'; })
+                        .join(', '),
+                'background-position':
+                    this.props.players
+                        .filter(function(v,i) {return i%2 == _this.props.positionId })
+                        .length > 1 ? 'bottom left, bottom right' : ''
+            }
 		}
 
         playerClasses = 'player player_' + this.props.positionId;
@@ -214,7 +242,11 @@ var PlayerComponent = module.exports = React.createClass({
             details = (
                 <div className='details'>
                     <div className='score'>{this.state.score}</div>
-                    <div className='name'>{(this.props.players.length && this.props.players.filter(function(v,i){return i%2 == _this.props.positionId }).sort(function(a,b) { return !( typeof _this.props.server !== 'undefined' && typeof _this.props.nextServer !== 'undefined') || ( typeof _this.props.server !== 'undefined' && typeof _this.props.nextServer !== 'undefined' && _this.props.players[_this.props.nextServer].name != a.name && _this.props.players[_this.props.server].name != a.name ) ? -1 : 1; }).map(function(v) { return v.name; }).join(' & ')) || 'Add player'}</div>
+                    <div className='name'>{(this.props.players.length && this.props.players
+                        .filter(function(v,i) {return i%2 == _this.props.positionId })
+                        .sort(function(a,v) { return _this.getPlayerOrder(a, v, _this); })
+                        .map(function(v) { return v.name; })
+                        .join(' & ')) || 'Add player'}</div>
                 </div>
             );
         }
