@@ -149,7 +149,7 @@ gameController.prototype.addPlayer = function(playerID, custom, cb) {
         if(!player) {
 				console.log(chalk.red('Newbie ' + value + ' wants to start a game'));
 
-				new Player({rfid: value, name: first_set_random_names.randomElement() + ' ' + second_set_random_names.randomElement(), gender: 'male'}).save().then(function (newbie) {
+				new Player({rfid: value, name: first_set_random_names.randomElement() + ' ' + second_set_random_names.randomElement(), image: 'alex.png', gender: 'male'}).save().then(function (newbie) {
 					console.log(JSON.stringify(newbie));
 					_this.manageIncomingPlayer(newbie, cb);
 				});
