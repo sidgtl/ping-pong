@@ -119,7 +119,7 @@ var GameComponent = module.exports = React.createClass({
             score: data.gameScore
         });
 
-//	this.queueSound('scored');
+	this.queueSound('scored');
 
         // This is really counterintuitive, and far from a permanent
         // solution. This small delay allows us to cancel the score
