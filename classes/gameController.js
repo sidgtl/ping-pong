@@ -398,9 +398,10 @@ gameController.prototype.ready = function () {
 
 	// Find the players head to head score
 	Player.headToHead(players[0].get('id'), players[1].get('id')).then(function (scores) {
-		io.sockets.emit('stats.headToHead', {
+		// first need 4 players support
+		/*io.sockets.emit('stats.headToHead', {
 			headToHead: scores
-		});
+		});*/
 	});
 
 };
@@ -575,7 +576,7 @@ gameController.prototype.checkServerSwitch = function(forceServe) {
         }
 
 		nextServer = this.getNextServer(players, serve, this.startingPlayer);
-        // in a 3 players game serve can be the virtual 4th player, in this case we have to change it to the single player (seve = 1)
+        // in a 3 players game serve can be the virtual 4th player, in this case we have to change it to the single player (serve = 1)
         realServe = serve >= players.length ? serve - 2 : serve;
 		realNextServer = nextServer >= players.length ? nextServer -2 : nextServer;
 
@@ -717,7 +718,8 @@ gameController.prototype.clientJoined = function () {
 
 
 gameController.prototype.setPlayersForRematch = function (players) {
-	console.log('setting rematch players to'+[players]);
+	console.log('setting rematch players to' + players.map(function(player){ return player.toJSON(); }).join(','));
+	players.forEach(function(player,i) { console.log('player ' + i + ': ' + JSON.stringify(player)); });
 	this.playersForRematch = players;
 };
 
