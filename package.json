@@ -30,7 +30,8 @@
     "sparknode": "^0.4.9",
     "through2": "^0.6.1",
     "uglifyify": "^2.5.0",
-    "underscore": "1.6.0"
+    "underscore": "1.6.0",
+	"python-shell": "^0.4.0"
   },
   "devDependencies": {
     "async": "^0.9.0",
