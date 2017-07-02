@@ -234,6 +234,9 @@ var GameComponent = module.exports = React.createClass({
 	                    }
 	                }, offset);
 				});
+				audio.addEventListener('error', function() {
+					play();
+				});
             } else {
                 soundsPlaying = false;
             }
