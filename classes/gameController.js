@@ -307,7 +307,8 @@ gameController.prototype.end = function (complete) {
  * i.e. `score` or `removePoint`.
  */
 gameController.prototype.feelerPressed = function(data) {
-    var positionId = data - 1;
+    var positionId = data - 1,
+		_this = this;
     if(this.isReadyForRematch()) {
         playersForRematch = this.getPlayersForRematch();
         this.setPlayersForRematch([]);
@@ -320,8 +321,13 @@ gameController.prototype.feelerPressed = function(data) {
                 console.log('for rematch adding player with id: '+player.id + ' name: ' + player.get('name'));
                 // async.eachSeries forces sequential adding of players so the fetch promise and its asynchronousness does not break the order of players
                 game.addPlayer(player.id, null, cb);
-            });
-        }, settings.winningViewDuration + 300);
+				// maybe we need to make the player a team
+            }, function() {
+			// for the rematch we know which team should serve, so simulate the first score
+			// startingPlayer can be 0or2 (if team a started) or 1or3, but feelers are just 0 or 1, so use modulo
+			_this.feelers[_this.startingPlayer % 2].emit('score');
+		});
+        }, settings.winningViewDuration + 300 + 3000);
     } else { 
         this.feelers[positionId].emit('score');
     }
