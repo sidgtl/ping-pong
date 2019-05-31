@@ -186,7 +186,8 @@ var GameComponent = module.exports = React.createClass({
 
         this.queueSound('game_end');
 
-	this.queueSound(data.winner % 2 == 0 ? 'blue-team-dominating' : 'red-team-dominating');
+//	this.queueSound(data.winner % 2 == 0 ? 'blue-team-dominating' : 'red-team-dominating');
+	this.queueSound(slug(playerSound).toLowerCase() + '-won-the-game');
     },
 
     resetQueue: function() {
