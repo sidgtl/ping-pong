@@ -20,7 +20,8 @@ var PlayerComponent = module.exports = React.createClass({
         return {
             name: '',
             score: 0,
-            image: false,
+            image: false
+            image_winning: false,
             win: false,
             gamePoint: false,
             gamePointVisible: true
@@ -200,7 +201,7 @@ var PlayerComponent = module.exports = React.createClass({
                     this.props.players
                         .filter(function(v,i) {return i%2 == _this.props.positionId })
                         .sort(function(a,v) { return _this.getPlayerOrder(a, v, _this); })
-                        .map(function(v) { return 'url(img/players/' + v.image + ')'; })
+                        .map(function(v) { return 'url(' + v.image + ')'; })
                         .join(', '),
                 'background-position':
                     this.props.players
@@ -215,7 +216,7 @@ var PlayerComponent = module.exports = React.createClass({
                     this.props.players
                         .filter(function(v,i) {return i%2 == _this.props.positionId })
                         .sort(function(a,v) { return _this.getPlayerOrder(a, v, _this); })
-                        .map(function(v) { return 'url(img/players/win/' + v.image + ')'; })
+                        .map(function(v) { return 'url(' + v.image_winning + ')'; })
                         .join(', '),
                 'background-position':
                     this.props.players
