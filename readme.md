@@ -45,3 +45,5 @@ Remember to rebuild the frontend after regenerating the sounds in order to inclu
 ### CSS
 - <del>Add Autoprefixer</del> and strip vendor prefixes
 - Make variables for commonly used values
+
+[![Run on Repl.it](https://repl.it/badge/github/sidgtl/Ping-Pong)](https://repl.it/github/sidgtl/Ping-Pong)
